@@ -58,6 +58,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes rippleOut{0%{transform:scale(0.8);opacity:0.8}100%{transform:scale(2.2);opacity:0}}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+/* Mobile auth fix */
+@media (max-height: 700px) {
+  #s-auth .sa, #s-signup .sa { padding-top: 20px !important; }
+  #s-auth h1, #s-signup h1 { font-size: 1.3rem !important; margin-bottom: 4px !important; }
+  #s-auth p, #s-signup p { margin-bottom: 8px !important; font-size: 0.72rem !important; }
+  #s-auth span:first-child, #s-signup span:first-child { font-size: 1.8rem !important; margin-bottom: 8px !important; }
+  .auth-inp { padding: 9px 12px !important; margin-bottom: 6px !important; font-size: 0.82rem !important; }
+  .btn { padding: 11px !important; font-size: 0.72rem !important; margin-top: 6px !important; }
+  .btn2 { padding: 9px !important; font-size: 0.68rem !important; margin-top: 6px !important; }
+}
 @keyframes btflyRise{0%{transform:translateY(0) rotate(-8deg);opacity:0}10%{opacity:0.8}85%{opacity:0.4}100%{transform:translateY(-105vh) rotate(12deg);opacity:0}}
 @keyframes btflyDrift{0%,100%{margin-left:0}50%{margin-left:22px}}
 </style>
