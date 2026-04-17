@@ -18,6 +18,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Jost',sa
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 65% 50% at 15% 10%,rgba(200,184,218,0.4) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 85% 20%,rgba(232,200,200,0.35) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 90%,rgba(184,212,216,0.3) 0%,transparent 55%);pointer-events:none;z-index:0}
 #app{position:fixed;inset:0;z-index:1;overflow:hidden}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.35s ease,transform 0.35s ease;transform:translateY(14px);overflow:hidden}
+#s-auth,#s-signup{overflow-y:scroll !important;-webkit-overflow-scrolling:touch !important}
+#s-auth,#s-signup{overflow-y:auto !important;-webkit-overflow-scrolling:touch !important}
 #s-auth,#s-signup{overflow-y:auto;-webkit-overflow-scrolling:touch}
 .screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
 .sa{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:90px}
@@ -64,47 +66,39 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="app">
 
 <!-- AUTH SCREEN -->
-<div class="screen active" id="s-auth" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative">
-  <div id="btf-auth" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:24px 24px 40px;text-align:center">
-    <span style="font-size:3.5rem;display:block;margin-bottom:20px;animation:float 4s ease-in-out infinite">🦋</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.25;color:var(--deep);margin-bottom:8px">
-      Welcome.<br><em style="font-style:italic;color:var(--mid)">You are safe here.</em>
-    </h1>
-    <p style="font-size:0.85rem;color:var(--soft);line-height:1.75;margin-bottom:28px">Your healing space is waiting. 🤍</p>
-    <div style="width:100%;max-width:360px">
+<div class="screen active" id="s-auth" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6)">
+  <div class="sa">
+    <div style="padding:40px 24px 20px;text-align:center">
+      <span style="font-size:2.2rem;display:block;margin-bottom:10px;animation:float 4s ease-in-out infinite">🦋</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:6px">Welcome.<br><em style="font-style:italic;color:var(--mid)">You are safe here.</em></h1>
+      <p style="font-size:0.78rem;color:var(--soft);line-height:1.6;margin-bottom:16px">Your healing space is waiting. 🤍</p>
       <div id="auth-msg" class="auth-msg"></div>
-      <input id="auth-email" class="auth-inp" type="email" placeholder="your@email.com">
-      <input id="auth-pass" class="auth-inp" type="password" placeholder="Password">
-      <button class="btn" onclick="signIn()">Come home →</button>
-      <button class="btn2" onclick="go('s-signup')">I'm new here — create account</button>
-      <p style="margin-top:18px;font-size:0.7rem;color:var(--soft);cursor:pointer" onclick="forgotPass()">Forgot your password?</p>
+      <input id="auth-email" class="auth-inp" type="email" placeholder="your@email.com" style="padding:11px 14px;margin-bottom:8px">
+      <input id="auth-pass" class="auth-inp" type="password" placeholder="Password" style="padding:11px 14px;margin-bottom:8px">
+      <button class="btn" onclick="signIn()" style="padding:13px">Come home →</button>
+      <button class="btn2" onclick="go('s-signup')" style="padding:11px">I'm new here — create account</button>
+      <p style="margin-top:12px;font-size:0.7rem;color:var(--soft);cursor:pointer" onclick="forgotPass()">Forgot your password?</p>
     </div>
   </div>
 </div>
 
 <!-- SIGN UP SCREEN -->
-<div class="screen" id="s-signup" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative">
-  <div id="btf-signup" style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100%;padding:24px 24px 40px;text-align:center">
-    <span style="font-size:3.5rem;display:block;margin-bottom:20px;animation:float 3.5s ease-in-out infinite">🦋</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.25;color:var(--deep);margin-bottom:8px">
-      You are so<br><em style="font-style:italic;color:var(--mid)">welcome here.</em>
-    </h1>
-    <p style="font-size:0.85rem;color:var(--soft);line-height:1.75;margin-bottom:4px">No judgment. No pressure. Just you and your healing.</p>
-    <p style="font-size:0.8rem;color:rgba(168,152,184,0.7);margin-bottom:24px">Everything you write is private and safe. 🤍</p>
-    <div style="width:100%;max-width:360px">
+<div class="screen" id="s-signup" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6)">
+  <div class="sa">
+    <div style="padding:40px 24px 20px;text-align:center">
+      <span style="font-size:2.2rem;display:block;margin-bottom:10px;animation:float 3.5s ease-in-out infinite">🦋</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:6px">You are so<br><em style="font-style:italic;color:var(--mid)">welcome here.</em></h1>
+      <p style="font-size:0.78rem;color:var(--soft);line-height:1.6;margin-bottom:14px">No judgment. No pressure. Just you and your healing. 🤍</p>
       <div id="signup-msg" class="auth-msg"></div>
-      <input id="signup-name" class="auth-inp" type="text" placeholder="What should we call you?">
-      <input id="signup-email" class="auth-inp" type="email" placeholder="your@email.com">
-      <input id="signup-pass" class="auth-inp" type="password" placeholder="Create a password (6+ characters)">
-      <button class="btn" onclick="signUp()">Begin my journey 🦋</button>
-      <button class="btn2" onclick="go('s-auth')">I already have an account</button>
-      <p style="margin-top:20px;font-size:0.65rem;color:rgba(168,152,184,0.5);line-height:1.6">This app is a wellness tool, not a substitute for professional mental health care.</p>
+      <input id="signup-name" class="auth-inp" type="text" placeholder="What should we call you?" style="padding:11px 14px;margin-bottom:8px">
+      <input id="signup-email" class="auth-inp" type="email" placeholder="your@email.com" style="padding:11px 14px;margin-bottom:8px">
+      <input id="signup-pass" class="auth-inp" type="password" placeholder="Password (6+ characters)" style="padding:11px 14px;margin-bottom:8px">
+      <button class="btn" onclick="signUp()" style="padding:13px">Begin my journey 🦋</button>
+      <button class="btn2" onclick="go('s-auth')" style="padding:11px">I already have an account</button>
+      <p style="margin-top:10px;font-size:0.6rem;color:rgba(168,152,184,0.4);line-height:1.4">This app is a wellness tool, not a substitute for professional mental health care.</p>
     </div>
   </div>
 </div>
-
 <!-- ONBOARDING -->
 <div class="screen" id="s-ob" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:48px 28px;text-align:center">
@@ -342,13 +336,20 @@ async function signUp() {
   if (!name || !email || !pass) { showMsg('signup-msg', 'Please fill in all fields.'); return; }
   if (pass.length < 6) { showMsg('signup-msg', 'Password must be at least 6 characters.'); return; }
   showMsg('signup-msg', 'Creating your space…');
-  var result = await sb.auth.signUp({email: email, password: pass, options: {data: {username: name}}});
-  if (result.error) { showMsg('signup-msg', result.error.message); return; }
-  if (result.data && result.data.user) {
-    await sb.from('profiles').upsert({id: result.data.user.id, username: name});
-    localStorage.setItem('btb_u', name);
-  } else {
-    showMsg('signup-msg', 'Check your email to confirm your account, then sign in.');
+  try {
+    var result = await sb.auth.signUp({email: email, password: pass, options: {data: {username: name}, emailRedirectTo: 'https://chrysalis247.github.io/Beforethebutterfly/'}});
+    if (result.error) { showMsg('signup-msg', result.error.message); return; }
+    if (result.data && result.data.user) {
+      try { await sb.from('profiles').upsert({id: result.data.user.id, username: name}); } catch(e) {}
+      localStorage.setItem('btb_u', name);
+      if (result.data.session) {
+        await onSignedIn(result.data.user);
+      } else {
+        showMsg('signup-msg', '✓ Account created! Check your email to confirm, then sign in.');
+      }
+    }
+  } catch(e) {
+    showMsg('signup-msg', 'Something went wrong. Please try again.');
   }
 }
 
