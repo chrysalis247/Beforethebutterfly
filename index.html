@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Before the Butterfly</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Before the Butterfly">
+<meta name="theme-color" content="#C8B8DA">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Ccircle cx='512' cy='512' r='512' fill='%23EDE8F5'/%3E%3Cpath d='M 512 480 C 475 410 365 348 255 332 C 175 320 138 368 162 422 C 186 476 272 494 362 482 C 428 474 482 470 512 480 Z' fill='%23C8B8DA'/%3E%3Cpath d='M 512 480 C 549 410 659 348 769 332 C 849 320 886 368 862 422 C 838 476 752 494 662 482 C 596 474 542 470 512 480 Z' fill='%23C8B8DA'/%3E%3Cpath d='M 512 502 C 475 535 388 565 302 582 C 228 596 188 568 200 526 C 212 484 288 470 372 474 C 436 477 490 490 512 502 Z' fill='%23B8A0CC'/%3E%3Cpath d='M 512 502 C 549 535 636 565 722 582 C 796 596 836 568 824 526 C 812 484 736 470 652 474 C 588 477 534 490 512 502 Z' fill='%23B8A0CC'/%3E%3Cellipse cx='512' cy='492' rx='13' ry='78' fill='%236B5878'/%3E%3Ccircle cx='512' cy='418' r='17' fill='%236B5878'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -13,6 +18,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Jost',sa
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 65% 50% at 15% 10%,rgba(200,184,218,0.4) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 85% 20%,rgba(232,200,200,0.35) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 90%,rgba(184,212,216,0.3) 0%,transparent 55%);pointer-events:none;z-index:0}
 #app{position:fixed;inset:0;z-index:1;overflow:hidden}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.35s ease,transform 0.35s ease;transform:translateY(14px);overflow:hidden}
+#s-auth,#s-signup{overflow-y:auto;-webkit-overflow-scrolling:touch}
 .screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
 .sa{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:90px}
 .sa::-webkit-scrollbar{display:none}
@@ -60,7 +66,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- AUTH SCREEN -->
 <div class="screen active" id="s-auth" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative">
   <div id="btf-auth" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:60px 32px 40px;text-align:center">
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:24px 24px 40px;text-align:center">
     <span style="font-size:3.5rem;display:block;margin-bottom:20px;animation:float 4s ease-in-out infinite">🦋</span>
     <h1 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.25;color:var(--deep);margin-bottom:8px">
       Welcome.<br><em style="font-style:italic;color:var(--mid)">You are safe here.</em>
@@ -79,8 +85,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- SIGN UP SCREEN -->
 <div class="screen" id="s-signup" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative">
-  <div id="btf-signup" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:60px 32px 40px;text-align:center">
+  <div id="btf-signup" style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100%;padding:24px 24px 40px;text-align:center">
     <span style="font-size:3.5rem;display:block;margin-bottom:20px;animation:float 3.5s ease-in-out infinite">🦋</span>
     <h1 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.25;color:var(--deep);margin-bottom:8px">
       You are so<br><em style="font-style:italic;color:var(--mid)">welcome here.</em>
@@ -289,7 +295,6 @@ function go(id) {
   var t = document.getElementById(id);
   if (t) { t.classList.add('active'); t.scrollTop = 0; }
   prev = cur; cur = id;
-  if (id === 's-auth' || id === 's-signup') { spawnButterflies(id === 's-auth' ? 'btf-auth' : 'btf-signup'); }
   if (id === 's-pride') { initPride(); }
   if (id === 's-sleep') { initSleep(); }
   if (id === 's-grat') { initGrat(); }
@@ -298,30 +303,7 @@ function go(id) {
 }
 function back() { go(prev); }
 
-// ─── BUTTERFLIES ─────────────────────────────────────────────────────
-function spawnButterflies(containerId) {
-  var c = document.getElementById(containerId);
-  if (!c) return;
-  c.innerHTML = '';
-  var emojis = ['🦋','🦋','🦋','✨','🌸','🦋','🌿'];
-  for (var i = 0; i < 9; i++) {
-    (function(idx) {
-      setTimeout(function() {
-        var b = document.createElement('div');
-        var em = emojis[Math.floor(Math.random() * emojis.length)];
-        var size = 1.0 + Math.random() * 1.6;
-        var left = 3 + Math.random() * 88;
-        var dur = 7 + Math.random() * 9;
-        var delay = Math.random() * 3;
-        b.style.cssText = 'position:absolute;font-size:' + size + 'rem;left:' + left + '%;bottom:-5%;opacity:0;animation:btflyRise ' + dur + 's ease-in ' + delay + 's forwards;pointer-events:none;filter:blur(0.2px)';
-        b.textContent = em;
-        c.appendChild(b);
-        setTimeout(function() { if (b.parentNode) b.parentNode.removeChild(b); }, (dur + delay + 1) * 1000);
-      }, idx * 700);
-    })(i);
-  }
-  setTimeout(function() { spawnButterflies(containerId); }, 12000);
-}
+
 
 // ─── TOAST ───────────────────────────────────────────────────────────
 function toast(m) {
@@ -679,6 +661,14 @@ function launchConfetti() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
+  // Inject PWA manifest
+  try {
+    var md = JSON.stringify({name:'Before the Butterfly',short_name:'BTB',start_url:'/Beforethebutterfly/',scope:'/Beforethebutterfly/',display:'standalone',orientation:'portrait',background_color:'#EDE8F5',theme_color:'#C8B8DA'});
+    var blob = new Blob([md], {type:'application/json'});
+    var ml = document.createElement('link');
+    ml.rel = 'manifest'; ml.href = URL.createObjectURL(blob);
+    document.head.appendChild(ml);
+  } catch(e) {}
   var hr=new Date().getHours();
   var g=document.getElementById('h-greet'); if(g) g.textContent=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
   var jp=document.getElementById('jnl-prm'); if(jp) jp.textContent=jPrms[new Date().getDate()%jPrms.length];
@@ -700,14 +690,12 @@ window.addEventListener('DOMContentLoaded', function() {
         onSignedIn(result.data.session.user);
       } else {
         go('s-auth');
-        spawnButterflies('btf-auth');
       }
     });
 
   } catch(e) {
     console.warn('Supabase error:', e);
     go('s-auth');
-    spawnButterflies('btf-auth');
   }
 });
 </script>
