@@ -387,7 +387,10 @@ function lockScreen(screenId, featureName) {
 }
 
 // ─── NAVIGATION ─────────────────────────────────────────────────────
+var LOCKED = {'s-pride':'Unapologetically Me','s-tl':'Healing Timeline','s-win':'Anonymous Wins','s-uns':'Unsent Letters','s-kind':'Kindred Spirits'};
+
 function go(id) {
+  if (LOCKED[id] && !isPremium()) { lockScreen(id, LOCKED[id]); return; }
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   var t = document.getElementById(id);
   if (t) { t.classList.add('active'); t.scrollTop = 0; }
