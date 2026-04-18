@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Before the Butterfly</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Before the Butterfly">
+<meta name="theme-color" content="#C8B8DA">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Ccircle cx='512' cy='512' r='512' fill='%23EDE8F5'/%3E%3Cpath d='M 512 480 C 475 410 365 348 255 332 C 175 320 138 368 162 422 C 186 476 272 494 362 482 C 428 474 482 470 512 480 Z' fill='%23C8B8DA'/%3E%3Cpath d='M 512 480 C 549 410 659 348 769 332 C 849 320 886 368 862 422 C 838 476 752 494 662 482 C 596 474 542 470 512 480 Z' fill='%23C8B8DA'/%3E%3Cpath d='M 512 502 C 475 535 388 565 302 582 C 228 596 188 568 200 526 C 212 484 288 470 372 474 C 436 477 490 490 512 502 Z' fill='%23B8A0CC'/%3E%3Cpath d='M 512 502 C 549 535 636 565 722 582 C 796 596 836 568 824 526 C 812 484 736 470 652 474 C 588 477 534 490 512 502 Z' fill='%23B8A0CC'/%3E%3Cellipse cx='512' cy='492' rx='13' ry='78' fill='%236B5878'/%3E%3Ccircle cx='512' cy='418' r='17' fill='%236B5878'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--lav:#C8B8DA;--blush:#E8C8C8;--mist:#B8D4D8;--gold:#D4B896;--sage:#B8CEB8;--deep:#2A2035;--mid:#6B5878;--soft:#A898B8;--surf:rgba(255,255,255,0.62);--bg:#EDE8F5}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Jost',sans-serif;font-weight:300;color:var(--deep)}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 65% 50% at 15% 10%,rgba(200,184,218,0.4) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 85% 20%,rgba(232,200,200,0.35) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 50% 90%,rgba(184,212,216,0.3) 0%,transparent 55%);pointer-events:none;z-index:0}
+#app{position:fixed;inset:0;z-index:1;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.35s ease,transform 0.35s ease;transform:translateY(14px);overflow:hidden}
+#s-auth,#s-signup{overflow-y:scroll !important;-webkit-overflow-scrolling:touch !important}
+#s-auth,#s-signup{overflow-y:auto !important;-webkit-overflow-scrolling:touch !important}
+#s-auth,#s-signup{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.sa{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:90px}
+.sa::-webkit-scrollbar{display:none}
+.card{background:var(--surf);backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,0.68);border-radius:20px;padding:18px 20px;box-shadow:0 4px 20px rgba(107,88,120,0.07)}
+.bn{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.8);padding:8px 0 22px;display:flex;justify-content:space-around;align-items:center;z-index:100}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 12px;border-radius:14px;transition:background 0.2s;flex:1}
+.ni.on{background:rgba(200,184,218,0.25)}
+.ni .ic{font-size:1.1rem}
+.ni .lb{font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--soft)}
+.ni.on .lb{color:var(--mid)}
+.btn{width:100%;background:var(--deep);color:rgba(255,255,255,0.92);border:none;border-radius:14px;padding:15px;font-family:'Jost',sans-serif;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;margin-top:10px}
+.btn:disabled{opacity:0.35;pointer-events:none}
+.btn2{width:100%;background:transparent;border:1.5px solid rgba(107,88,120,0.2);border-radius:14px;padding:13px;font-family:'Jost',sans-serif;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--soft);cursor:pointer;margin-top:10px}
+.sbn{background:var(--deep);color:rgba(255,255,255,0.9);border:none;border-radius:10px;padding:7px 16px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer}
+.sbn:disabled{opacity:0.35}
+.bbr{padding:52px 20px 0;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.bbb{width:34px;height:34px;border-radius:50%;background:var(--surf);border:1px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.9rem;color:var(--mid);flex-shrink:0}
+.bbt{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--soft)}
+.ttl{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:6px}
+.ttl em{font-style:italic;color:var(--mid)}
+.sub{font-size:0.82rem;color:var(--soft);line-height:1.55}
+.wave{width:36px;height:2px;border-radius:2px;margin-bottom:12px}
+.sl{font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--soft);padding:20px 24px 10px;display:block}
+.tag{background:rgba(255,255,255,0.38);border:1.5px solid rgba(255,255,255,0.6);border-radius:100px;padding:5px 12px;font-size:0.7rem;color:var(--mid);cursor:pointer;display:inline-block;margin:3px}
+.tag.on{border-color:var(--lav);background:rgba(200,184,218,0.2);color:var(--deep)}
+.fi{width:100%;background:var(--surf);border:1.5px solid rgba(255,255,255,0.68);border-radius:14px;padding:13px 16px;font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:var(--deep);outline:none;margin-bottom:10px;box-sizing:border-box}
+.fi::placeholder{color:rgba(107,88,120,0.3)}
+.spc{margin:0 20px 10px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.spi{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.spn{font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:400;color:var(--deep);margin-bottom:2px}
+.spd{font-size:0.68rem;color:var(--soft)}
+.auth-inp{width:100%;background:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.9);border-radius:14px;padding:13px 16px;font-family:'Jost',sans-serif;font-size:0.88rem;color:var(--deep);outline:none;margin-bottom:10px;box-sizing:border-box}
+.auth-inp::placeholder{color:rgba(107,88,120,0.4)}
+.auth-msg{display:none;background:rgba(200,184,218,0.25);border:1px solid rgba(200,184,218,0.4);border-radius:12px;padding:10px 14px;font-size:0.78rem;color:var(--mid);margin-bottom:14px;text-align:left;line-height:1.5}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes rippleOut{0%{transform:scale(0.8);opacity:0.8}100%{transform:scale(2.2);opacity:0}}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+/* Mobile auth fix */
+@media (max-height: 700px) {
+  #s-auth .sa, #s-signup .sa { padding-top: 20px !important; }
+  #s-auth h1, #s-signup h1 { font-size: 1.3rem !important; margin-bottom: 4px !important; }
+  #s-auth p, #s-signup p { margin-bottom: 8px !important; font-size: 0.72rem !important; }
+  #s-auth span:first-child, #s-signup span:first-child { font-size: 1.8rem !important; margin-bottom: 8px !important; }
+  .auth-inp { padding: 9px 12px !important; margin-bottom: 6px !important; font-size: 0.82rem !important; }
+  .btn { padding: 11px !important; font-size: 0.72rem !important; margin-top: 6px !important; }
+  .btn2 { padding: 9px !important; font-size: 0.68rem !important; margin-top: 6px !important; }
+}
+@keyframes btflyRise{0%{transform:translateY(0) rotate(-8deg);opacity:0}10%{opacity:0.8}85%{opacity:0.4}100%{transform:translateY(-105vh) rotate(12deg);opacity:0}}
+@keyframes btflyDrift{0%,100%{margin-left:0}50%{margin-left:22px}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- AUTH SCREEN -->
+<div class="screen active" id="s-auth" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6)">
+  <div class="sa">
+    <div style="padding:40px 24px 20px;text-align:center">
+      <span style="font-size:2.2rem;display:block;margin-bottom:10px;animation:float 4s ease-in-out infinite">🦋</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:6px">Welcome.<br><em style="font-style:italic;color:var(--mid)">You are safe here.</em></h1>
+      <p style="font-size:0.78rem;color:var(--soft);line-height:1.6;margin-bottom:16px">Your healing space is waiting. 🤍</p>
+      <div id="auth-msg" class="auth-msg"></div>
+      <input id="auth-email" class="auth-inp" type="email" placeholder="your@email.com" style="padding:11px 14px;margin-bottom:8px">
+      <input id="auth-pass" class="auth-inp" type="password" placeholder="Password" style="padding:11px 14px;margin-bottom:8px">
+      <button class="btn" onclick="signIn()" style="padding:13px">Come home →</button>
+      <button class="btn2" onclick="go('s-signup')" style="padding:11px">I'm new here — create account</button>
+      <p style="margin-top:12px;font-size:0.7rem;color:var(--soft);cursor:pointer" onclick="forgotPass()">Forgot your password?</p>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP SCREEN -->
+<div class="screen" id="s-signup" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6)">
+  <div class="sa">
+    <div style="padding:40px 24px 20px;text-align:center">
+      <span style="font-size:2.2rem;display:block;margin-bottom:10px;animation:float 3.5s ease-in-out infinite">🦋</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:6px">You are so<br><em style="font-style:italic;color:var(--mid)">welcome here.</em></h1>
+      <p style="font-size:0.78rem;color:var(--soft);line-height:1.6;margin-bottom:14px">No judgment. No pressure. Just you and your healing. 🤍</p>
+      <div id="signup-msg" class="auth-msg"></div>
+      <input id="signup-name" class="auth-inp" type="text" placeholder="What should we call you?" style="padding:11px 14px;margin-bottom:8px">
+      <input id="signup-email" class="auth-inp" type="email" placeholder="your@email.com" style="padding:11px 14px;margin-bottom:8px">
+      <input id="signup-pass" class="auth-inp" type="password" placeholder="Password (6+ characters)" style="padding:11px 14px;margin-bottom:8px">
+      <button class="btn" onclick="signUp()" style="padding:13px">Begin my journey 🦋</button>
+      <button class="btn2" onclick="go('s-auth')" style="padding:11px">I already have an account</button>
+      <p style="margin-top:10px;font-size:0.6rem;color:rgba(168,152,184,0.4);line-height:1.4">This app is a wellness tool, not a substitute for professional mental health care.</p>
+    </div>
+  </div>
+</div>
+<!-- ONBOARDING -->
+<div class="screen" id="s-ob" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F6);overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:48px 28px;text-align:center">
+    <div id="ob1" style="width:100%">
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:24px"><div style="height:3px;width:28px;border-radius:2px;background:var(--mid)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div></div>
+      <span style="font-size:3rem;display:block;margin-bottom:24px;animation:float 4s ease-in-out infinite">🦋</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:300;line-height:1.2;color:var(--deep);margin-bottom:16px">You're not broken.<br>You're <em style="font-style:italic;color:var(--mid)">in between.</em></h1>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.75;margin-bottom:32px">Hey. We're really glad you're here.<br><br>No streaks to stress about, no toxic positivity, no pressure. Just a soft, honest space for you to feel and slowly become who you're meant to be.<br><br>You don't have to have it together to start. 🤍</p>
+      <button class="btn" onclick="obGo(2)">I'm ready →</button>
+      <button class="btn2" onclick="obGo(2)">Take me in quietly</button>
+    </div>
+    <div id="ob2" style="display:none;width:100%">
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:24px"><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--mid)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div></div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:300;color:var(--deep);margin-bottom:8px">How are you <em style="font-style:italic;color:var(--mid)">actually</em> doing?</h1>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.75;margin-bottom:16px">No right answer. Just be honest.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">🌪️</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Overwhelmed</div><div style="font-size:0.65rem;color:var(--soft)">Too much at once</div></div>
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">💧</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Healing</div><div style="font-size:0.65rem;color:var(--soft)">Working through it</div></div>
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">🌫️</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Numb</div><div style="font-size:0.65rem;color:var(--soft)">Can't feel anything</div></div>
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">🔥</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Angry</div><div style="font-size:0.65rem;color:var(--soft)">Something needs to shift</div></div>
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">🌱</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Ready</div><div style="font-size:0.65rem;color:var(--soft)">Time for something new</div></div>
+        <div onclick="pickFeel(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.3rem;display:block;margin-bottom:6px">🤍</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Just here</div><div style="font-size:0.65rem;color:var(--soft)">No words for it yet</div></div>
+      </div>
+      <button class="btn" id="feel-btn" disabled onclick="obGo(3)">That's where I am →</button>
+    </div>
+    <div id="ob3" style="display:none;width:100%">
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:24px"><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--mid)"></div><div style="height:3px;width:28px;border-radius:2px;background:rgba(107,88,120,0.15)"></div></div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:300;color:var(--deep);margin-bottom:8px">What brought you <em style="font-style:italic;color:var(--mid)">here?</em></h1>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.75;margin-bottom:16px">Choose as many as feel true.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+        <div onclick="pickReason(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left"><span style="font-size:1.1rem;flex-shrink:0">💔</span><span style="font-size:0.85rem;color:var(--deep)">I'm healing from something (or someone)</span></div>
+        <div onclick="pickReason(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left"><span style="font-size:1.1rem;flex-shrink:0">🪬</span><span style="font-size:0.85rem;color:var(--deep)">I want to understand myself better</span></div>
+        <div onclick="pickReason(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left"><span style="font-size:1.1rem;flex-shrink:0">🌿</span><span style="font-size:0.85rem;color:var(--deep)">I want to grow into a better version of me</span></div>
+        <div onclick="pickReason(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left"><span style="font-size:1.1rem;flex-shrink:0">🤐</span><span style="font-size:0.85rem;color:var(--deep)">I have things I need to say but can't</span></div>
+        <div onclick="pickReason(this)" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left"><span style="font-size:1.1rem;flex-shrink:0">✨</span><span style="font-size:0.85rem;color:var(--deep)">I need a space that's just mine</span></div>
+      </div>
+      <button class="btn" id="reason-btn" disabled onclick="obGo(4)">This is me →</button>
+    </div>
+    <div id="ob4" style="display:none;width:100%">
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:24px"><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--lav)"></div><div style="height:3px;width:28px;border-radius:2px;background:var(--mid)"></div></div>
+      <span style="font-size:3rem;display:block;margin-bottom:24px;animation:float 4s ease-in-out infinite">🌸</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:300;color:var(--deep);margin-bottom:16px">What should we <em style="font-style:italic;color:var(--mid)">call you?</em></h1>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.75;margin-bottom:20px">Just your first name is perfect.</p>
+      <input id="ob-name" type="text" placeholder="Your name…" oninput="onNameInput(this.value)" style="width:100%;background:transparent;border:none;border-bottom:2px solid var(--lav);padding:12px 0;font-family:'Playfair Display',serif;font-size:1.8rem;font-style:italic;color:var(--deep);outline:none;margin-bottom:16px;text-align:center">
+      <p id="ob-name-aff" style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:var(--soft);line-height:1.65;margin-bottom:24px;min-height:50px">This space will remember you — not to track you, but to welcome you home. 🤍</p>
+      <button class="btn" id="ob-name-btn" disabled onclick="finishOb()">Take me to my space →</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="s-home" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F5)">
+  <div class="sa">
+    <div style="padding:52px 24px 0;display:flex;justify-content:space-between;align-items:flex-start">
+      <div><p id="h-greet" style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--soft);margin-bottom:4px">Good morning</p><h1 id="h-name" style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;color:var(--deep);line-height:1.1">How are you <em style="font-style:italic;color:var(--mid)">really</em><br>feeling today?</h1></div>
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--lav),var(--blush));display:flex;align-items:center;justify-content:center;font-size:1rem">🌸</div>
+    </div>
+    <div class="card" style="margin:20px 20px 0;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--lav),var(--blush),var(--mist))"></div>
+      <p style="font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--soft);margin-bottom:8px">Today's intention</p>
+      <p id="h-int" style="font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:var(--deep);line-height:1.55;margin-bottom:12px">"I give myself permission to feel without needing to explain it."</p>
+      <span onclick="newInt()" style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--soft);border-bottom:1px solid var(--blush);padding-bottom:1px;cursor:pointer">Set yours →</span>
+    </div>
+    <div style="display:flex;gap:10px;margin:14px 20px 0">
+      <div style="flex:1;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.5);border-radius:16px;padding:14px 10px;text-align:center"><div id="h-se" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:300;color:var(--deep);margin-bottom:3px">0</div><div style="font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--soft)">Entries</div></div>
+      <div style="flex:1;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.5);border-radius:16px;padding:14px 10px;text-align:center"><div id="h-sw" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:300;color:var(--deep);margin-bottom:3px">0</div><div style="font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--soft)">Wins shared</div></div>
+      <div style="flex:1;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.5);border-radius:16px;padding:14px 10px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:300;color:var(--deep);margin-bottom:3px">1</div><div style="font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--soft)">Day streak</div></div>
+    </div>
+    <span class="sl">Your spaces</span>
+    <div class="card spc" onclick="go('s-prem')" style="background:linear-gradient(135deg,rgba(200,184,218,0.25),rgba(232,200,200,0.15));border-color:rgba(200,184,218,0.4)"><div class="spi" style="background:linear-gradient(135deg,#C8B8DA,#E8C8C8)">✨</div><div style="flex:1"><div class="spn">Unlock Premium</div><div class="spd">$6.99/month · All features</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-pride')" style="background:linear-gradient(135deg,rgba(155,89,182,0.1),rgba(77,150,255,0.06));border-color:rgba(155,89,182,0.2)"><div class="spi" style="background:linear-gradient(135deg,#FF6B6B,#9B59B6)">🌈</div><div style="flex:1"><div class="spn">Unapologetically Me</div><div class="spd">A safe space to exist as you are</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-breathe')" style="background:linear-gradient(135deg,rgba(184,212,216,0.2),rgba(184,212,216,0.08));border-color:rgba(184,212,216,0.3)"><div class="spi" style="background:linear-gradient(135deg,#B8D4D8,#8FADB2)">🫁</div><div style="flex:1"><div class="spn">Just Breathe</div><div class="spd">Grounding tools · Free always</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-today')" style="background:linear-gradient(135deg,rgba(212,184,150,0.2),rgba(212,184,150,0.08));border-color:rgba(212,184,150,0.3)"><div class="spi" style="background:linear-gradient(135deg,#D4B896,#A88A6A)">🌅</div><div style="flex:1"><div class="spn">Today I Need</div><div class="spd">What does today ask of you?</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-carry')" style="background:linear-gradient(135deg,rgba(200,184,218,0.15),rgba(200,184,218,0.05));border-color:rgba(200,184,218,0.2)"><div class="spi" style="background:linear-gradient(135deg,#C8B8DA,#9D8CB5)">🪨</div><div style="flex:1"><div class="spn">Things I'm Carrying</div><div class="spd">Put it down somewhere safe</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-grat')" style="background:linear-gradient(135deg,rgba(184,206,184,0.2),rgba(184,206,184,0.08));border-color:rgba(184,206,184,0.3)"><div class="spi" style="background:linear-gradient(135deg,#B8CEB8,#8FAD8F)">🌿</div><div style="flex:1"><div class="spn">Gratitude</div><div class="spd">One small thing that existed today</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-sleep')" style="background:linear-gradient(135deg,rgba(42,32,53,0.08),rgba(42,32,53,0.03));border-color:rgba(42,32,53,0.1)"><div class="spi" style="background:linear-gradient(135deg,#2A2035,#3D2D52)">🌙</div><div style="flex:1"><div class="spn">Sleep and Rest</div><div class="spd">Wind down. Let the day go.</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-support')" style="background:linear-gradient(135deg,rgba(232,200,200,0.2),rgba(232,200,200,0.08));border-color:rgba(232,200,200,0.3)"><div class="spi" style="background:linear-gradient(135deg,#E8C8C8,#C49898)">🤝</div><div style="flex:1"><div class="spn">Find Support</div><div class="spd">Therapists, hotlines and free resources</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-kind')" style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(255,215,0,0.03));border-color:rgba(255,215,0,0.2)"><div class="spi" style="background:linear-gradient(135deg,#FFD700,#FFA500)">🫂</div><div style="flex:1"><div class="spn">Kindred Spirits</div><div class="spd">Find your healing buddy — coming soon</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-jnl')"><div class="spi" style="background:linear-gradient(135deg,rgba(200,184,218,0.5),rgba(232,200,200,0.4))">🦋</div><div style="flex:1"><div class="spn">Glow-Up Journal</div><div class="spd">Before the butterfly</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-mood')"><div class="spi" style="background:linear-gradient(135deg,rgba(184,212,216,0.5),rgba(200,184,218,0.4))">🌊</div><div style="flex:1"><div class="spn">Mood Translator</div><div class="spd">What are you really feeling?</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-tl')"><div class="spi" style="background:linear-gradient(135deg,rgba(184,206,184,0.5),rgba(184,212,216,0.4))">🌿</div><div style="flex:1"><div class="spn">Healing Timeline</div><div class="spd">Your non-linear progress</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-win')"><div class="spi" style="background:linear-gradient(135deg,rgba(200,184,218,0.4),rgba(184,212,216,0.4))">✨</div><div style="flex:1"><div class="spn">Anonymous Wins</div><div class="spd">Small victories, no judgment</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div class="card spc" onclick="go('s-uns')"><div class="spi" style="background:linear-gradient(135deg,rgba(232,200,200,0.4),rgba(212,184,150,0.35))">🕊️</div><div style="flex:1"><div class="spn">Unsent</div><div class="spd">Write it. Release it.</div></div><span style="color:var(--lav);font-size:0.9rem">›</span></div>
+    <div style="text-align:center;padding:20px 0"><span onclick="signOut()" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--soft);cursor:pointer;border-bottom:1px solid rgba(200,184,218,0.3);padding-bottom:2px">Sign out</span></div>
+  </div>
+  <nav class="bn"><div class="ni on" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav>
+</div>
+
+<!-- PREMIUM -->
+<div class="screen" id="s-prem" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F5)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Premium</span></div><div style="padding:16px 20px"><div class="wave" style="background:linear-gradient(90deg,#C8B8DA,#E8C8C8)"></div><h2 class="ttl">Your full healing <em>sanctuary.</em></h2><p class="sub" style="margin-bottom:20px">Everything unlocked. Yours to keep.</p><div class="card" style="margin-bottom:16px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:300;color:var(--deep)">$6.99</div><div style="font-size:0.8rem;color:var(--soft);margin-top:4px">per month · Cancel anytime</div><div style="display:flex;flex-direction:column;gap:10px;margin:20px 0;text-align:left"><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Unlimited journal entries</span></div><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Unlimited Mood Translator</span></div><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Unsent letters saved forever</span></div><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Full Healing Timeline</span></div><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Post Anonymous Wins</span></div><div style="display:flex;align-items:center;gap:10px"><span style="color:#C8B8DA">✓</span><span style="font-size:0.85rem">Unapologetically Me — full access</span></div></div><a href="https://buy.stripe.com/28E14ggyp1tJ3z1dfvcZa00" target="_blank" style="display:block;background:linear-gradient(135deg,#C8B8DA,#E8C8C8);color:#2A2035;border-radius:14px;padding:16px;font-family:'Jost',sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none">Start my healing journey →</a><p style="margin-top:10px;font-size:0.65rem;color:var(--soft)">Secured by Stripe · No hidden fees</p></div><div style="text-align:center;padding-bottom:20px"><span onclick="back()" style="font-family:'Jost',sans-serif;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--soft);cursor:pointer">Maybe later</span></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- PRIDE -->
+<div class="screen" id="s-pride" style="background:linear-gradient(155deg,#F5EEF8,#EDE6F8,#EEF0F8)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Unapologetically Me</span></div><div style="padding:8px 20px 20px"><div style="height:3px;background:linear-gradient(90deg,#FF6B6B,#FF8E53,#FFD93D,#6BCB77,#4D96FF,#9B59B6);border-radius:2px;margin-bottom:16px"></div><h2 class="ttl">Unapologetically <em>Me.</em> 🌈</h2><p class="sub" style="margin-bottom:16px">You are not too much. You are not a phase. You are exactly who you are.</p><div class="card" style="margin-bottom:14px;text-align:center"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:12px">Today's affirmation</p><p id="pride-aff" style="font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:var(--deep);line-height:1.7;margin-bottom:14px"></p><button onclick="nextPrideAff()" style="background:#F7F4FB;border:1px solid rgba(200,184,218,0.3);border-radius:100px;padding:8px 18px;font-family:'Jost',sans-serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);cursor:pointer">New affirmation</button></div><div class="card" style="margin-bottom:14px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:10px">Identity Journal</p><p id="pride-prm" style="font-size:0.82rem;color:var(--mid);line-height:1.6;margin-bottom:12px;font-style:italic;background:#F9F7FC;border-radius:8px;padding:10px;border-left:2px solid #9B59B6"></p><textarea id="pride-body" placeholder="Write freely. This space is yours alone." style="width:100%;min-height:100px;background:#F9F7FC;border:1.5px solid rgba(200,184,218,0.3);border-radius:12px;padding:12px;font-family:'Playfair Display',serif;font-size:0.88rem;font-style:italic;color:var(--deep);resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea><div style="display:flex;gap:8px;margin-top:10px"><button onclick="nextPridePrm()" style="flex:1;background:#F7F4FB;border:1px solid rgba(200,184,218,0.3);border-radius:10px;padding:10px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);cursor:pointer">New prompt</button><button onclick="savePride()" style="flex:2;background:linear-gradient(135deg,#9B59B6,#4D96FF);color:white;border:none;border-radius:10px;padding:10px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer">Save entry</button></div></div><div class="card"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:10px">If you need support right now</p><div style="display:flex;flex-direction:column;gap:8px"><a href="tel:18662346428" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:#F9F7FC;border-radius:10px;padding:11px 13px"><span>🏳️‍🌈</span><div><p style="font-size:0.82rem;font-weight:500;color:var(--deep)">The Trevor Project</p><p style="font-size:0.68rem;color:var(--soft)">1-866-488-7386 · 24/7</p></div></a><a href="sms:678678" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:#F9F7FC;border-radius:10px;padding:11px 13px"><span>💬</span><div><p style="font-size:0.82rem;font-weight:500;color:var(--deep)">Crisis Text Line</p><p style="font-size:0.68rem;color:var(--soft)">Text START to 678-678</p></div></a></div></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- BREATHE -->
+<div class="screen" id="s-breathe" style="background:linear-gradient(155deg,#E8F0F5,#EDE6F8,#EAF0E8)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Just Breathe</span></div><div style="padding:8px 20px 20px"><div class="wave" style="background:linear-gradient(90deg,#B8D4D8,#C8B8DA)"></div><h2 class="ttl">You are <em>safe.</em></h2><p class="sub" style="margin-bottom:20px">Right here. Right now. You are okay.</p><div class="card" style="margin-bottom:14px;text-align:center"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:20px">Box Breathing</p><div style="width:130px;height:130px;border-radius:50%;border:2px solid rgba(184,212,216,0.4);margin:0 auto 20px;display:flex;align-items:center;justify-content:center"><div id="br-inner" style="width:70px;height:70px;border-radius:50%;background:rgba(184,212,216,0.2);transition:all 4s ease;display:flex;align-items:center;justify-content:center"><p id="br-txt" style="font-family:'Playfair Display',serif;font-size:0.82rem;font-style:italic;color:var(--mid)">Ready</p></div></div><p id="br-inst" style="font-size:0.78rem;color:var(--soft);margin-bottom:20px">4 in · 4 hold · 4 out · 4 hold</p><button id="br-btn" onclick="toggleBreath()" style="background:rgba(184,212,216,0.15);border:1px solid rgba(184,212,216,0.3);border-radius:100px;padding:12px 28px;font-family:'Jost',sans-serif;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);cursor:pointer">Begin</button></div><div class="card" style="margin-bottom:14px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:14px">5-4-3-2-1 Grounding</p><div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:12px;background:#F7F4FB;border-radius:12px;padding:12px"><span>👁️</span><div><p style="font-size:0.85rem;color:var(--deep)"><strong>5</strong> things you can see</p><p style="font-size:0.7rem;color:var(--soft)">Look around slowly.</p></div></div><div style="display:flex;gap:12px;background:#F7F4FB;border-radius:12px;padding:12px"><span>✋</span><div><p style="font-size:0.85rem;color:var(--deep)"><strong>4</strong> things you can touch</p><p style="font-size:0.7rem;color:var(--soft)">Feel the texture.</p></div></div><div style="display:flex;gap:12px;background:#F7F4FB;border-radius:12px;padding:12px"><span>👂</span><div><p style="font-size:0.85rem;color:var(--deep)"><strong>3</strong> things you can hear</p><p style="font-size:0.7rem;color:var(--soft)">Listen carefully.</p></div></div><div style="display:flex;gap:12px;background:#F7F4FB;border-radius:12px;padding:12px"><span>👃</span><div><p style="font-size:0.85rem;color:var(--deep)"><strong>2</strong> things you can smell</p><p style="font-size:0.7rem;color:var(--soft)">Breathe in gently.</p></div></div><div style="display:flex;gap:12px;background:#F7F4FB;border-radius:12px;padding:12px"><span>👅</span><div><p style="font-size:0.85rem;color:var(--deep)"><strong>1</strong> thing you can taste</p><p style="font-size:0.7rem;color:var(--soft)">You are here.</p></div></div></div></div><div class="card" style="text-align:center"><p style="font-size:0.75rem;color:var(--soft);margin-bottom:12px">Need to talk to someone right now?</p><a href="tel:988" style="display:inline-block;background:rgba(184,212,216,0.15);border:1px solid rgba(184,212,216,0.3);border-radius:100px;padding:12px 28px;font-family:'Jost',sans-serif;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);text-decoration:none">Call or Text 988</a></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- TODAY I NEED -->
+<div class="screen" id="s-today" style="background:linear-gradient(155deg,#F5F0E8,#EDE6F8,#EAF0E8)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Today I Need</span></div><div style="padding:8px 20px 0"><div class="wave" style="background:linear-gradient(90deg,#D4B896,#C8B8DA)"></div><h2 class="ttl">What do you need <em>today?</em></h2><p class="sub" style="margin-bottom:20px">Not what you should need. What you actually need.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"><button onclick="pickToday(this,'s-breathe','You are safe right here. Lets breathe together.','Just Breathe')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">🫁</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">To Breathe</p><p style="font-size:0.68rem;color:var(--soft)">Ground myself now</p></button><button onclick="pickToday(this,'s-jnl','You have something worth saying. The journal is waiting.','Open my Journal')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">👂</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">To Be Heard</p><p style="font-size:0.68rem;color:var(--soft)">Say what is inside</p></button><button onclick="pickToday(this,'s-uns','You do not have to keep holding it. Let it go.','Go to Unsent')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">🕊️</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">To Let Go</p><p style="font-size:0.68rem;color:var(--soft)">Release what is heavy</p></button><button onclick="pickToday(this,'s-win','A win is a win no matter how small.','Share a Win')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">✨</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">To Celebrate</p><p style="font-size:0.68rem;color:var(--soft)">Even small wins count</p></button><button onclick="pickToday(this,'s-mood','Lets find out what is really underneath.','Translate my mood')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">🌊</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">To Understand</p><p style="font-size:0.68rem;color:var(--soft)">What am I feeling?</p></button><button onclick="pickToday(this,'s-sleep','You carried a lot today. You are allowed to put it down.','Go to Sleep and Rest')" class="card" style="text-align:center;cursor:pointer"><span style="font-size:1.8rem;display:block;margin-bottom:8px">😴</span><p style="font-family:'Playfair Display',serif;font-size:0.88rem;color:var(--deep);margin-bottom:2px">Rest</p><p style="font-size:0.68rem;color:var(--soft)">Permission to slow down</p></button></div><div id="today-card" style="display:none" class="card"><p id="today-txt" style="font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:var(--deep);line-height:1.7;margin-bottom:16px"></p><button id="today-go" class="btn" style="margin-top:0"></button></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- CARRYING -->
+<div class="screen" id="s-carry" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F5)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Things I am Carrying</span></div><div style="padding:8px 20px 0"><div class="wave" style="background:linear-gradient(90deg,#C8B8DA,#B8D4D8)"></div><h2 class="ttl">Put it down <em>here.</em></h2><p class="sub" style="margin-bottom:20px">No solutions. No advice. Just a safe place for what is heavy.</p><div class="card" style="margin-bottom:14px"><input id="carry-inp" type="text" placeholder="Something I am carrying right now…" style="width:100%;background:#F7F4FB;border:1.5px solid rgba(200,184,218,0.3);border-radius:12px;padding:13px 16px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:var(--deep);outline:none;margin-bottom:10px;box-sizing:border-box"><button onclick="addCarry()" class="btn" style="margin-top:0">Add to my list</button></div><div id="carry-list"></div><p id="carry-empty" style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:var(--soft);line-height:1.7;text-align:center;padding:20px 0">Everything you are carrying deserves to be acknowledged.</p></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- GRATITUDE -->
+<div class="screen" id="s-grat" style="background:linear-gradient(155deg,#EAF0E8,#EDE6F8,#E8F0F5)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Gratitude</span></div><div style="padding:8px 20px 0"><div class="wave" style="background:linear-gradient(90deg,#B8CEB8,#B8D4D8)"></div><h2 class="ttl">One small <em>good thing.</em></h2><p class="sub" style="margin-bottom:20px">Not toxic positivity. Real gratitude — even on hard days.</p><div class="card" style="margin-bottom:14px"><p id="grat-prm" style="font-size:0.88rem;color:var(--mid);line-height:1.65;margin-bottom:14px;font-style:italic"></p><textarea id="grat-body" placeholder="Write freely…" style="width:100%;min-height:100px;background:#F9F7FC;border:1.5px solid rgba(184,206,184,0.3);border-radius:12px;padding:12px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:var(--deep);resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea><div style="display:flex;gap:8px;margin-top:10px"><button onclick="nextGratPrm()" style="flex:1;background:#F7F4FB;border:1px solid rgba(200,184,218,0.3);border-radius:10px;padding:10px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);cursor:pointer">New prompt</button><button onclick="saveGrat()" style="flex:2;background:#B8CEB8;color:white;border:none;border-radius:10px;padding:10px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer">Save</button></div></div><div id="grat-list"></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- SLEEP -->
+<div class="screen" id="s-sleep" style="background:linear-gradient(155deg,#2A2035,#3D2D52,#2A3040)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7)">‹</div><span class="bbt" style="color:rgba(255,255,255,0.5)">Sleep and Rest</span></div><div style="padding:8px 20px 0"><h2 style="font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:300;line-height:1.2;color:white;margin-bottom:6px">Wind down. <em style="font-style:italic;color:var(--lav)">Let the day go.</em></h2><p style="font-size:0.82rem;color:rgba(255,255,255,0.5);line-height:1.55;margin-bottom:20px">You carried a lot today. You are allowed to put it down.</p><div class="card" style="margin-bottom:14px;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px">Brain dump</p><textarea id="sleep-dump" placeholder="Everything in my head right now…" style="width:100%;min-height:100px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:white;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea><button onclick="clearDump()" style="width:100%;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:15px;font-family:'Jost',sans-serif;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;margin-top:10px">Put it down for tonight</button></div><div class="card" style="margin-bottom:14px;text-align:center;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:14px">Rest affirmation</p><p id="sleep-aff" style="font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:white;line-height:1.75;margin-bottom:14px"></p><button onclick="nextSleepAff()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:8px 18px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.5);cursor:pointer">Next</button></div><div class="card" style="margin-bottom:20px;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px">3 good things from today</p><input id="sg1" placeholder="1." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.85rem;color:white;outline:none;margin-bottom:8px;box-sizing:border-box"><input id="sg2" placeholder="2." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.85rem;color:white;outline:none;margin-bottom:8px;box-sizing:border-box"><input id="sg3" placeholder="3." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;font-family:'Playfair Display',serif;font-style:italic;font-size:0.85rem;color:white;outline:none;margin-bottom:12px;box-sizing:border-box"><button onclick="clearGoods()" style="width:100%;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:15px;font-family:'Jost',sans-serif;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer">Rest well 🌙</button></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- SUPPORT -->
+<div class="screen" id="s-support" style="background:linear-gradient(155deg,#F5EEF0,#EDE6F8,#EAF0F5)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Find Support</span></div><div style="padding:8px 20px 0"><div class="wave" style="background:linear-gradient(90deg,#E8C8C8,#C8B8DA)"></div><h2 class="ttl">You deserve <em>real support.</em></h2><p class="sub" style="margin-bottom:20px">This app is a start. But sometimes you need a real human.</p><div class="card" style="margin-bottom:14px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:#CC5050;margin-bottom:12px">Crisis Support — 24/7</p><div style="display:flex;flex-direction:column;gap:8px"><a href="tel:988" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>📞</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">988 Lifeline</p><p style="font-size:0.7rem;color:var(--soft)">Call or text 988 · Free and confidential</p></div></a><a href="sms:741741" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>💬</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">Crisis Text Line</p><p style="font-size:0.7rem;color:var(--soft)">Text HELLO to 741741</p></div></a><a href="tel:18002738255" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>🤍</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">NAMI Helpline</p><p style="font-size:0.7rem;color:var(--soft)">1-800-950-6264</p></div></a></div></div><div class="card" style="margin-bottom:20px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:12px">Find a Therapist</p><div style="display:flex;flex-direction:column;gap:8px"><a href="https://www.psychologytoday.com/us/therapists" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>🔍</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">Psychology Today</p><p style="font-size:0.7rem;color:var(--soft)">Search by location and insurance</p></div></a><a href="https://www.openpathcollective.org" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>💚</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">Open Path Collective</p><p style="font-size:0.7rem;color:var(--soft)">Sliding scale · $30 to $80 per session</p></div></a><a href="https://www.7cups.com" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F9F7FC;border-radius:12px;padding:12px 14px;text-decoration:none"><span>☕</span><div><p style="font-size:0.85rem;font-weight:500;color:var(--deep)">7 Cups</p><p style="font-size:0.7rem;color:var(--soft)">Free anonymous chat with listeners</p></div></a></div></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- KINDRED -->
+<div class="screen" id="s-kind" style="background:linear-gradient(155deg,#EDE6F8,#F5EEF2,#EAF0F5)"><div class="sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Kindred Spirits</span></div><div style="padding:8px 20px 20px"><div class="wave" style="background:linear-gradient(90deg,#FFD700,#FFA500)"></div><h2 class="ttl">Find your <em>healing buddy.</em></h2><p class="sub" style="margin-bottom:20px">Someone who gets it. Someone in the messy middle too.</p><div class="card" style="text-align:center"><span style="font-size:2.5rem;display:block;margin-bottom:16px">🫂</span><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:10px">Coming Soon</p><h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:400;color:var(--deep);margin-bottom:12px">We are building something beautiful.</h3><p style="font-size:0.82rem;color:var(--soft);line-height:1.7;margin-bottom:20px">Kindred Spirits will match you with an anonymous healing buddy. No pressure. No expectations. Just someone who understands.</p><input id="kind-email" type="email" placeholder="your@email.com" style="width:100%;background:#F7F4FB;border:1.5px solid rgba(200,184,218,0.3);border-radius:12px;padding:13px 16px;font-family:'Jost',sans-serif;font-size:0.85rem;color:var(--deep);outline:none;margin-bottom:10px;box-sizing:border-box"><button onclick="joinKindred()" class="btn" style="margin-top:0;background:linear-gradient(135deg,#FFD700,#FFA500);color:#2A2035">Notify me when it launches</button></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- MOOD -->
+<div class="screen" id="s-mood" style="background:linear-gradient(155deg,#E8F0F5,#EDE6F8,#EAF0E8)"><div class="sa" id="mood-sa"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">Mood Translator</span></div><div id="mood-pick"><div style="padding:16px 24px 0"><div class="wave" style="background:linear-gradient(90deg,var(--mist),var(--lav))"></div><h2 class="ttl">What are you <em>feeling</em> on the surface?</h2><p class="sub">Pick the closest — even if it does not fully fit.</p></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 20px 0"><div class="mc" onclick="pickEmo(this,'angry')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🔥</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Angry</div><div style="font-size:0.65rem;color:var(--soft)">Frustrated, irritated</div></div><div class="mc" onclick="pickEmo(this,'sad')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🌧️</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Sad</div><div style="font-size:0.65rem;color:var(--soft)">Heavy, tearful, low</div></div><div class="mc" onclick="pickEmo(this,'anxious')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🌀</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Anxious</div><div style="font-size:0.65rem;color:var(--soft)">Worried, restless</div></div><div class="mc" onclick="pickEmo(this,'numb')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🌫️</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Numb</div><div style="font-size:0.65rem;color:var(--soft)">Empty, disconnected</div></div><div class="mc" onclick="pickEmo(this,'lonely')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🌙</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Lonely</div><div style="font-size:0.65rem;color:var(--soft)">Unseen, isolated</div></div><div class="mc" onclick="pickEmo(this,'overwhelmed')" style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.65);border-radius:16px;padding:14px;cursor:pointer;text-align:left"><span style="font-size:1.2rem;margin-bottom:5px;display:block">🌊</span><div style="font-size:0.82rem;font-weight:400;color:var(--deep)">Overwhelmed</div><div style="font-size:0.65rem;color:var(--soft)">Too much, too fast</div></div></div><div style="margin:14px 20px 0;background:var(--surf);border:1.5px solid rgba(255,255,255,0.68);border-radius:18px;padding:16px 18px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:8px">Tell us more — optional</p><textarea id="mood-extra" placeholder="What's going on for you right now?" maxlength="280" oninput="onMoodExtra(this)" style="width:100%;background:transparent;border:none;outline:none;resize:none;font-family:'Jost',sans-serif;font-size:0.88rem;font-weight:300;color:var(--deep);line-height:1.65;min-height:70px"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(200,184,218,0.15)"><span id="mood-chars" style="font-size:0.6rem;color:rgba(107,88,120,0.35)">0 / 280</span><button id="mood-btn" class="sbn" disabled onclick="doTranslate()">Translate →</button></div></div><div style="height:20px"></div></div><div id="mood-load" style="display:none"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px"><div style="position:relative;width:70px;height:70px;margin-bottom:24px"><div style="position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--mist);animation:rippleOut 2.4s ease-out infinite"></div><div style="position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--mist);animation:rippleOut 2.4s ease-out infinite;animation-delay:0.8s"></div><div style="position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--mist);animation:rippleOut 2.4s ease-out infinite;animation-delay:1.6s"></div><div style="position:absolute;inset:16px;border-radius:50%;background:linear-gradient(135deg,rgba(184,212,216,0.5),rgba(200,184,218,0.4));display:flex;align-items:center;justify-content:center;font-size:1.3rem">🌊</div></div><p style="font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--mid);text-align:center;line-height:1.6">Looking beneath<br>the surface…</p></div></div><div id="mood-res" style="display:none"><div style="padding:20px 20px 0"><p style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--soft);margin-bottom:6px">What's really going on</p><h2 class="ttl" id="mr-ttl">Beneath the <em>anger</em></h2><div style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.7);border-radius:22px;overflow:hidden;box-shadow:0 6px 28px rgba(107,88,120,0.08);margin-bottom:12px;margin-top:16px"><div style="padding:16px 20px 14px;background:linear-gradient(135deg,rgba(184,212,216,0.2),rgba(200,184,218,0.15));border-bottom:1px solid rgba(255,255,255,0.5)"><p style="font-size:0.58rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--soft);margin-bottom:8px">Surface → Underneath</p><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><div id="mr-sur" style="background:rgba(255,255,255,0.6);border:1px solid rgba(184,212,216,0.4);border-radius:100px;padding:4px 10px;font-size:0.75rem;color:var(--deep)">🔥 Angry</div><span style="color:var(--mist)">↓</span></div><p style="font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--soft);margin-bottom:6px">What it's really saying</p><p id="mr-un" style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--deep)"></p></div><div style="padding:14px 20px"><p id="mr-ins" style="font-size:0.88rem;color:var(--mid);line-height:1.75"></p></div></div><div style="background:linear-gradient(135deg,rgba(212,184,150,0.15),rgba(232,200,200,0.15));border:1.5px solid rgba(212,184,150,0.25);border-radius:18px;padding:16px 18px;margin-bottom:14px"><p id="mr-val" style="font-family:'Playfair Display',serif;font-size:0.92rem;font-style:italic;color:var(--deep);line-height:1.6"></p></div><span class="sl" style="padding:0 0 10px">A space that might help</span><div id="mr-sug" class="card" style="display:flex;align-items:center;gap:14px;margin:0 0 12px;cursor:pointer"><div id="mr-sug-ic" style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,rgba(200,184,218,0.45),rgba(232,200,200,0.35));display:flex;align-items:center;justify-content:center;font-size:1.1rem">🕊️</div><div style="flex:1"><div id="mr-sug-n" style="font-family:'Playfair Display',serif;font-size:0.88rem;font-weight:400;color:var(--deep);margin-bottom:2px">Unsent</div><div id="mr-sug-d" style="font-size:0.68rem;color:var(--soft)">Say what you could not say</div></div><span style="color:var(--lav)">›</span></div><div style="padding:0 0 16px"><button class="btn2" style="margin-top:0" onclick="resetMood()">Translate another feeling</button></div></div></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni on"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- JOURNAL -->
+<div class="screen" id="s-jnl" style="background:linear-gradient(155deg,#F5F0E8,#EDE6F8,#EAF0E8)"><div class="sa"><div style="padding:52px 24px 0;display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0"><div><div class="wave" style="background:linear-gradient(90deg,var(--gold),var(--sage))"></div><h2 class="ttl">Before the <em>butterfly</em></h2><p class="sub">The messy, honest middle. All of it counts.</p></div><button class="sbn" onclick="go('s-write')" style="margin-bottom:4px">+ Write</button></div><div class="card" style="margin:16px 20px 0;cursor:pointer;position:relative;overflow:hidden" onclick="go('s-write')"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--sage))"></div><p style="font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;opacity:0.85">✦ Today's prompt</p><p id="jnl-prm" style="font-family:'Playfair Display',serif;font-size:0.88rem;font-style:italic;color:var(--mid);line-height:1.5"></p><div style="margin-top:10px;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--soft)">✦ Tap to write</div></div><span class="sl">Your journey</span><div style="padding:0 20px" id="jnl-list"><p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:20px 0">Your entries will appear here 🦋</p></div><div style="height:20px"></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni on"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- WRITE -->
+<div class="screen" id="s-write" style="background:linear-gradient(155deg,#F5F0E8,#EDE6F8,#EAF0E8)"><div class="bbr"><div class="bbb" onclick="back()">‹</div><span class="bbt">New Entry</span></div><div style="padding:14px 24px 0;flex-shrink:0"><input class="fi" type="text" placeholder="Give this entry a title…" id="w-title" oninput="checkWrite()"></div><div style="margin:12px 20px 0;flex:1;background:var(--surf);border:1.5px solid rgba(255,255,255,0.7);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;box-shadow:0 4px 20px rgba(107,88,120,0.06);min-height:0"><textarea id="w-body" placeholder="Start wherever feels true. There's no wrong way to begin…" oninput="checkWrite()" style="flex:1;width:100%;background:transparent;border:none;outline:none;resize:none;font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;font-weight:300;color:var(--deep);line-height:1.85;min-height:180px"></textarea><div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(200,184,218,0.15);margin-top:10px"><span id="w-wc" style="font-size:0.6rem;color:rgba(107,88,120,0.35)">0 words</span></div></div><div style="padding:10px 20px 0;flex-shrink:0"><span class="tag" onclick="this.classList.toggle('on')">🌱 Growing</span><span class="tag" onclick="this.classList.toggle('on')">💧 Sad</span><span class="tag" onclick="this.classList.toggle('on')">🔥 Angry</span><span class="tag" onclick="this.classList.toggle('on')">🌿 Healing</span><span class="tag" onclick="this.classList.toggle('on')">✨ Proud</span><span class="tag" onclick="this.classList.toggle('on')">🤍 Peaceful</span></div><div style="padding:12px 20px 32px;flex-shrink:0"><button class="btn" id="w-save" disabled onclick="saveEntry()">Save this entry 🦋</button></div></div>
+
+<!-- UNSENT -->
+<div class="screen" id="s-uns" style="background:linear-gradient(155deg,#F5EEF0,#EDE6F8,#F0EEE8)"><div class="sa"><div style="padding:52px 24px 0;flex-shrink:0"><div class="wave" style="background:linear-gradient(90deg,#D4A0A0,var(--gold))"></div><h2 class="ttl">Who is this <em>letter</em> for?</h2><p class="sub">You'll never send it. This is just for you.</p></div><span class="sl" style="padding-top:16px">Choose your recipient</span><div class="card" style="margin:0 20px 10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="pickRec('Someone in my life','Dear you,')"><div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,rgba(232,200,200,0.5),rgba(212,184,150,0.3));display:flex;align-items:center;justify-content:center;font-size:1.2rem">👤</div><div><p style="font-size:0.88rem;font-weight:400;color:var(--deep);margin-bottom:2px">Someone in my life</p><p style="font-size:0.68rem;color:var(--soft)">A person you never got to say everything to</p></div><span style="color:var(--blush);margin-left:auto">›</span></div><div class="card" style="margin:0 20px 10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="pickRec('A past version of me','Dear younger me,')"><div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,rgba(200,184,218,0.5),rgba(232,200,200,0.35));display:flex;align-items:center;justify-content:center;font-size:1.2rem">🪬</div><div><p style="font-size:0.88rem;font-weight:400;color:var(--deep);margin-bottom:2px">A past version of me</p><p style="font-size:0.68rem;color:var(--soft)">The you who needed to hear something different</p></div><span style="color:var(--blush);margin-left:auto">›</span></div><div class="card" style="margin:0 20px 10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="pickRec('A chapter that is over','To this chapter,')"><div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,rgba(212,184,150,0.4),rgba(184,212,216,0.35));display:flex;align-items:center;justify-content:center;font-size:1.2rem">📖</div><div><p style="font-size:0.88rem;font-weight:400;color:var(--deep);margin-bottom:2px">A chapter that's over</p><p style="font-size:0.68rem;color:var(--soft)">A time, place, or situation you need to release</p></div><span style="color:var(--blush);margin-left:auto">›</span></div><div class="card" style="margin:0 20px 10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="pickRec('Someone I have lost','To you, wherever you are,')"><div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,rgba(184,212,216,0.45),rgba(200,184,218,0.35));display:flex;align-items:center;justify-content:center;font-size:1.2rem">🕊️</div><div><p style="font-size:0.88rem;font-weight:400;color:var(--deep);margin-bottom:2px">Someone I've lost</p><p style="font-size:0.68rem;color:var(--soft)">When there are still words that need somewhere to go</p></div><span style="color:var(--blush);margin-left:auto">›</span></div><div style="margin:12px 20px 0;background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.5);border-radius:12px;padding:10px 14px;font-size:0.7rem;color:var(--mid);line-height:1.5;display:flex;align-items:center;gap:8px">🔒 Everything here is completely private. No one will ever read this but you.</div><span class="sl" style="padding-top:16px">Your saved letters</span><div style="padding:0 20px" id="uns-list"><p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:16px 0">Your kept letters will appear here 🕊️</p></div><div style="height:20px"></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni" onclick="go('s-win')"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni on"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- WRITE UNSENT -->
+<div class="screen" id="s-wuns" style="background:linear-gradient(155deg,#F5EEF0,#EDE6F8,#F0EEE8)"><div class="bbr" style="flex-shrink:0"><div class="bbb" onclick="back()">‹</div><span class="bbt">Write it out</span></div><div style="padding:12px 24px 0;flex-shrink:0"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:4px">To</p><p id="u-to" style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300;font-style:italic;color:var(--deep)">Someone in my life</p></div><div style="margin:12px 20px 0;flex:1;background:var(--surf);border:1.5px solid rgba(255,255,255,0.72);border-radius:22px;overflow:hidden;box-shadow:0 6px 28px rgba(107,88,120,0.07);display:flex;flex-direction:column"><div style="padding:14px 18px 10px;border-bottom:1px solid rgba(200,184,218,0.15)"><p id="u-sal" style="font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;color:var(--mid)">Dear you,</p></div><div style="flex:1;padding:12px 18px"><textarea id="u-body" placeholder="There's so much I never got to say…" oninput="checkLetter(this)" style="width:100%;height:100%;min-height:160px;background:transparent;border:none;outline:none;resize:none;font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;font-weight:300;color:var(--deep);line-height:1.8"></textarea></div><div style="padding:8px 18px 14px;border-top:1px solid rgba(200,184,218,0.15);display:flex;justify-content:space-between;align-items:center"><span id="u-wc" style="font-size:0.6rem;color:rgba(107,88,120,0.35)">0 words</span><button id="u-done" class="sbn" disabled onclick="go('s-ending')">Done →</button></div></div><div style="height:20px;flex-shrink:0"></div></div>
+
+<!-- ENDING -->
+<div class="screen" id="s-ending" style="background:linear-gradient(155deg,#F5EEF0,#EDE6F8,#F0EEE8);justify-content:center;align-items:center;text-align:center;padding:48px 32px"><div style="width:100%"><div class="wave" style="background:linear-gradient(90deg,var(--blush),var(--gold));margin:0 auto 12px"></div><h2 class="ttl" style="margin-bottom:8px">What do you want to <em>do with it?</em></h2><p class="sub" style="margin-bottom:20px">You're in control of what happens next.</p><div class="card" style="margin:0 0 12px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" onclick="doEnding('burn')"><div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:linear-gradient(135deg,rgba(255,200,150,0.4),rgba(255,160,100,0.25))">🔥</div><div><p style="font-size:0.92rem;font-weight:400;color:var(--deep);margin-bottom:2px">Burn it</p><p style="font-size:0.7rem;color:var(--soft)">Let it turn to ash. It's said. It's done.</p></div></div><div class="card" style="margin:0 0 12px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" onclick="doEnding('release')"><div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:linear-gradient(135deg,rgba(184,212,216,0.45),rgba(200,184,218,0.3))">🕊️</div><div><p style="font-size:0.92rem;font-weight:400;color:var(--deep);margin-bottom:2px">Release it</p><p style="font-size:0.7rem;color:var(--soft)">Let it float away — real, but no longer heavy.</p></div></div><div class="card" style="margin:0 0 12px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left" onclick="doEnding('keep')"><div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:linear-gradient(135deg,rgba(200,184,218,0.45),rgba(232,200,200,0.35))">🤍</div><div><p style="font-size:0.92rem;font-weight:400;color:var(--deep);margin-bottom:2px">Keep it</p><p style="font-size:0.7rem;color:var(--soft)">Save it privately. Some letters deserve to exist.</p></div></div></div></div>
+
+<!-- RITUAL -->
+<div class="screen" id="s-ritual" style="background:linear-gradient(155deg,#F5EEF0,#EDE6F8,#F0EEE8);justify-content:center;align-items:center;text-align:center;padding:48px 32px"><div id="rit-ic" style="font-size:3rem;margin-bottom:24px">🔥</div><h2 id="rit-ttl" style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:300;line-height:1.3;color:var(--deep);margin-bottom:12px">It's <em style="font-style:italic;color:var(--mid)">gone.</em></h2><p id="rit-msg" style="font-size:0.88rem;color:var(--soft);line-height:1.75;margin-bottom:32px">The words existed. They mattered.</p><button class="btn" onclick="go('s-uns')">Write another →</button><button class="btn2" onclick="go('s-home')">Take me home 🤍</button></div>
+
+<!-- TIMELINE -->
+<div class="screen" id="s-tl" style="background:linear-gradient(155deg,#E8F0F0,#EDE6F8,#EAF0E8)"><div class="sa"><div style="padding:52px 24px 0;display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0"><div><div class="wave" style="background:linear-gradient(90deg,var(--mist),var(--sage))"></div><h2 class="ttl">Your river of <em>healing</em></h2><p class="sub">Sometimes fast. Sometimes still. Always moving.</p></div><button class="sbn" onclick="go('s-addm')" style="margin-bottom:4px">+ Add</button></div><div style="position:relative;padding:10px 20px 0"><div style="position:absolute;left:50%;top:0;bottom:0;width:8px;transform:translateX(-50%);background:linear-gradient(to bottom,rgba(184,212,216,0.3),rgba(184,212,216,0.2),transparent);border-radius:4px"></div><div id="tl-list"><p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:30px 0 10px">Your healing moments will flow here 🌿</p></div></div><div style="margin:10px 20px 20px;background:linear-gradient(135deg,rgba(184,212,216,0.12),rgba(184,206,184,0.1));border:1px solid rgba(184,212,216,0.2);border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:10px"><span style="font-size:1rem">🌿</span><p style="font-family:'Playfair Display',serif;font-size:0.82rem;font-style:italic;color:var(--mid);line-height:1.5">"Even a river that seems still is always moving. So are you."</p></div><div style="height:20px"></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni on"><span class="ic">🌿</span><span class="lb">Timeline</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- ADD MOMENT -->
+<div class="screen" id="s-addm" style="background:linear-gradient(155deg,#E8F0F0,#EDE6F8,#EAF0E8)"><div class="bbr" style="flex-shrink:0"><div class="bbb" onclick="back()">‹</div><span class="bbt">Add to your river</span></div><div style="padding:14px 24px 0;flex-shrink:0"><div class="wave" style="background:linear-gradient(90deg,var(--mist),var(--sage))"></div><h2 class="ttl">What happened in <em>your river?</em></h2><p class="sub">A small moment or a big turning point — both belong here.</p></div><div style="display:flex;gap:8px;margin:16px 20px 0;flex-shrink:0"><div id="t-mo" onclick="setMType('moment')" style="flex:1;padding:12px;background:rgba(184,212,216,0.2);border:1.5px solid var(--mist);border-radius:14px;cursor:pointer;text-align:center"><div style="font-size:1.1rem;margin-bottom:4px">💧</div><div style="font-size:0.72rem;font-weight:400;color:var(--deep)">Moment</div><div style="font-size:0.6rem;color:var(--soft)">A small ripple</div></div><div id="t-mi" onclick="setMType('milestone')" style="flex:1;padding:12px;background:rgba(255,255,255,0.38);border:1.5px solid rgba(255,255,255,0.6);border-radius:14px;cursor:pointer;text-align:center"><div style="font-size:1.1rem;margin-bottom:4px">🌟</div><div style="font-size:0.72rem;font-weight:400;color:var(--deep)">Milestone</div><div style="font-size:0.6rem;color:var(--soft)">A turning point</div></div></div><div style="flex:1;overflow-y:auto;padding:14px 20px 0;scrollbar-width:none"><label style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;display:block">What do you want to name this?</label><input class="fi" type="text" placeholder="Give it a title…" id="m-ttl" oninput="checkMom()"><label style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;display:block">Say more — optional</label><textarea class="fi" placeholder="What made this moment real for you?" id="m-note" style="min-height:80px"></textarea><button class="btn" id="m-save" disabled onclick="saveMoment()">Add to my river 🌿</button><div style="height:24px"></div></div></div>
+
+<!-- WINS -->
+<div class="screen" id="s-win" style="background:linear-gradient(155deg,#F5F0E8,#EDE6F8,#EAF0F5)"><div class="sa"><div style="padding:52px 24px 0;display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0"><div><div class="wave" style="background:linear-gradient(90deg,var(--gold),var(--lav))"></div><h2 class="ttl">Small victories, <em>no judgment</em></h2><p class="sub">Every win here is real. None are too small.</p></div><button onclick="go('s-sharew')" style="background:var(--deep);color:rgba(255,255,255,0.92);border:none;border-radius:100px;padding:8px 16px;font-family:'Jost',sans-serif;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;margin-bottom:4px">+ Share</button></div><div style="margin:12px 20px 0;background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.5);border-radius:12px;padding:10px 14px;font-size:0.7rem;color:var(--mid);line-height:1.5;display:flex;align-items:center;gap:8px">🔒 Completely anonymous. No names, no profiles, no comparison.</div><div style="display:flex;margin:14px 20px 0;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.6);border-radius:12px;padding:4px"><div id="w-tc" onclick="switchWins('c')" style="flex:1;padding:8px;border-radius:8px;cursor:pointer;text-align:center;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--deep);background:white;box-shadow:0 2px 6px rgba(107,88,120,0.1)">Community</div><div id="w-ty" onclick="switchWins('y')" style="flex:1;padding:8px;border-radius:8px;cursor:pointer;text-align:center;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--soft)">Your Wins</div></div><div id="win-fc" style="margin-top:12px"><div class="card" style="margin:0 20px 10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(200,184,218,0.5),rgba(232,200,200,0.4));display:flex;align-items:center;justify-content:center;font-size:0.75rem">🌸</div><div><p style="font-size:0.7rem;color:var(--deep);font-weight:400">Someone healing</p><p style="font-size:0.58rem;color:var(--soft)">2 minutes ago</p></div></div><p style="font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:400;color:var(--deep);line-height:1.5;margin-bottom:10px">I didn't text them back. <em style="font-style:italic;color:var(--mid)">Three days in a row.</em></p><div style="display:flex;gap:8px"><button onclick="this.style.color='#C08080'" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7);border-radius:100px;padding:5px 10px;cursor:pointer;font-size:0.68rem;color:var(--soft)"><span>🤍</span> Hold space</button><button onclick="this.style.color='var(--mid)'" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7);border-radius:100px;padding:5px 10px;cursor:pointer;font-size:0.68rem;color:var(--soft)"><span>✨</span> I needed this too</button></div></div><div class="card" style="margin:0 20px 10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(184,212,216,0.5),rgba(184,206,184,0.4));display:flex;align-items:center;justify-content:center;font-size:0.75rem">🌿</div><div><p style="font-size:0.7rem;color:var(--deep);font-weight:400">Someone healing</p><p style="font-size:0.58rem;color:var(--soft)">18 minutes ago</p></div></div><p style="font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:400;color:var(--deep);line-height:1.5;margin-bottom:10px">Got out of bed before noon. <em style="font-style:italic;color:var(--mid)">That was the whole goal today.</em></p><div style="display:flex;gap:8px"><button onclick="this.style.color='#C08080'" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7);border-radius:100px;padding:5px 10px;cursor:pointer;font-size:0.68rem;color:var(--soft)"><span>🤍</span> Hold space</button><button onclick="this.style.color='var(--mid)'" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7);border-radius:100px;padding:5px 10px;cursor:pointer;font-size:0.68rem;color:var(--soft)"><span>✨</span> I needed this too</button></div></div></div><div id="win-fy" style="display:none;margin-top:12px"><div id="win-yl"><div style="border:1.5px dashed rgba(200,184,218,0.3);border-radius:18px;padding:24px 20px;text-align:center;margin:0 20px"><div style="font-size:1.4rem;margin-bottom:10px">✨</div><p style="font-size:0.82rem;color:var(--soft);line-height:1.6">You haven't shared a win yet.<br>No win is too small for this space.</p></div></div></div><div style="height:20px"></div></div><nav class="bn"><div class="ni" onclick="go('s-home')"><span class="ic">🏠</span><span class="lb">Home</span></div><div class="ni" onclick="go('s-jnl')"><span class="ic">🦋</span><span class="lb">Journal</span></div><div class="ni" onclick="go('s-mood')"><span class="ic">🌊</span><span class="lb">Mood</span></div><div class="ni on"><span class="ic">✨</span><span class="lb">Wins</span></div><div class="ni" onclick="go('s-uns')"><span class="ic">🕊️</span><span class="lb">Unsent</span></div></nav></div>
+
+<!-- SHARE WIN -->
+<div class="screen" id="s-sharew" style="background:linear-gradient(155deg,#F5F0E8,#EDE6F8,#EAF0F5)"><div class="bbr" style="flex-shrink:0"><div class="bbb" onclick="back()">‹</div><span class="bbt">Share a win</span></div><div style="padding:14px 24px 0;flex-shrink:0"><div class="wave" style="background:linear-gradient(90deg,var(--gold),var(--lav))"></div><h2 class="ttl">What's your <em>win</em> today?</h2><p class="sub">Big or tiny — it all counts here.</p></div><div style="flex:1;overflow-y:auto;padding:14px 20px 0;scrollbar-width:none"><div style="background:var(--surf);border:1.5px solid rgba(255,255,255,0.7);border-radius:20px;padding:16px 18px"><p style="font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;opacity:0.85">✦ Your win</p><textarea id="win-txt" placeholder="I didn't text them back. I got out of bed. I said no…" maxlength="200" oninput="onWinType(this)" style="width:100%;background:transparent;border:none;outline:none;resize:none;font-family:'Playfair Display',serif;font-size:0.95rem;font-style:italic;font-weight:300;color:var(--deep);line-height:1.7;min-height:90px"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(200,184,218,0.15)"><span id="win-cc" style="font-size:0.6rem;color:rgba(107,88,120,0.35)">200 left</span></div></div><div style="margin:12px 0 0;background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.5);border-radius:12px;padding:10px 14px;font-size:0.7rem;color:var(--mid);line-height:1.5;display:flex;align-items:center;gap:8px">🔒 Shared anonymously. No one will know it's you.</div><button class="btn" id="win-post" disabled style="margin-top:14px" onclick="postWin()">Share this win ✨</button><div style="height:24px"></div></div></div>
+
+</div>
+<script>
+// ─── SUPABASE ───────────────────────────────────────────────────────
+var SUPA_URL = 'https://spmksmlxlyrvxygexgmq.supabase.co';
+var SUPA_KEY = 'sb_publishable_8zBtMhUd3wvasnpCLvRy5A_fkIVjMFl';
+var sb = null;
+var currentUser = null;
+
+// ─── STATE ──────────────────────────────────────────────────────────
+var cur = 's-auth', prev = 's-home';
+var mtype = 'moment';
+var emo = '';
+var recName = '', recSal = '';
+var entries = [], moments = [], letters = [], wins = [];
+var carrying = JSON.parse(localStorage.getItem('btb_c') || '[]');
+var gratEs = JSON.parse(localStorage.getItem('btb_g') || '[]');
+
+// ─── DATA ────────────────────────────────────────────────────────────
+var prideAffs = ['You are not a phase. You are exactly who you are — and that has always been enough.','Your identity is not up for debate. It never was.','The love you give and receive is real — regardless of who it is with.','You do not owe anyone an explanation for who you are.','Being yourself in a world that told you not to be is one of the bravest things a person can do.','You are whole. You have always been whole.'];
+var pridePrms = ['When did you first know who you really were?','Write to the version of you who was still hiding.','Describe a moment when you felt completely free to be yourself.','What would you tell a younger LGBTQ+ person who is struggling right now?','Write about your found family — the people who chose you.'];
+var prideAI = 0, pridePI = 0;
+var sleepAffs = ['You did enough today. Even if it did not feel like it.','Whatever was not finished today will still be there tomorrow. You are allowed to stop.','Your body carried you through another day. That deserves rest.','Rest is not a reward you have to earn. It is something you deserve simply by existing.','Sleep is an act of self-love. You are worthy of it.'];
+var sleepI = 0;
+var gratPrms = ['What is one small thing that existed today that did not have to?','Name something your body did today that you usually take for granted.','What is something simple that brought you even a moment of comfort?','What is one small beauty you noticed today?','What is one thing about yourself that you can appreciate today?'];
+var gratI = 0;
+var trData = {
+  angry:{t:'Beneath the <em>anger</em>',s:'🔥 Angry',u:'"I feel hurt and my boundaries were not respected."',i:'Anger often shows up loudly so something softer underneath does not have to. What you are feeling might actually be hurt, or a deep need that went unmet.',v:'"You are allowed to feel this. You do not need to explain it, fix it, or rush past it."',sc:'s-uns',si:'🕊️',sn:'Unsent',sd:'Say what you could not say'},
+  sad:{t:'Beneath the <em>sadness</em>',s:'🌧️ Sad',u:'"I am grieving something — a person, a version of myself, or a dream I held."',i:'Sadness is love with nowhere to go. It often means something mattered deeply to you. You are not weak for feeling this.',v:'"Let yourself feel it without rushing to feel better. Healing lives inside the feeling."',sc:'s-jnl',si:'🦋',sn:'Glow-Up Journal',sd:'Write through the messy middle'},
+  anxious:{t:'Beneath the <em>anxiety</em>',s:'🌀 Anxious',u:'"I am afraid of losing control, or something I care about feels uncertain."',i:'Anxiety is your mind trying to protect you from a future it cannot predict. You are not broken. You are just scared, and that is human.',v:'"You do not have to have it all figured out right now. One breath, one moment."',sc:'s-tl',si:'🌿',sn:'Healing Timeline',sd:'Track your progress without pressure'},
+  numb:{t:'Beneath the <em>numbness</em>',s:'🌫️ Numb',u:'"I have been carrying too much for too long. This is my mind protecting me."',i:'Numbness is not emptiness — it is often overwhelm in disguise. When we feel too much for too long, our nervous system goes quiet. This is you surviving.',v:'"It is okay to not feel everything right now. You are allowed to just exist today."',sc:'s-jnl',si:'🦋',sn:'Glow-Up Journal',sd:'Write whatever comes'},
+  lonely:{t:'Beneath the <em>loneliness</em>',s:'🌙 Lonely',u:'"I want to be truly seen and known — not just around people, but felt by them."',i:'Loneliness is not always about being alone. Sometimes it is about being in a room full of people and still feeling unseen. What you crave is real connection.',v:'"Wanting to be seen is one of the most human things there is. You deserve that."',sc:'s-win',si:'✨',sn:'Anonymous Wins',sd:'Share something small with people who get it'},
+  overwhelmed:{t:'Beneath the <em>overwhelm</em>',s:'🌊 Overwhelmed',u:'"I have taken on too much, or I feel like I am not enough to handle what is in front of me."',i:'Overwhelm often hides a deeper fear — that you will not be able to cope. Your nervous system is asking for rest.',v:'"You do not have to carry all of this today. Put some of it down."',sc:'s-uns',si:'🕊️',sn:'Unsent',sd:'Release what has been sitting heavy in you'}
+};
+var jPrms = ['"What is one thing you are carrying today that you wish you could put down?"','"What version of yourself are you working toward right now?"','"What emotion have you been avoiding? What might it be trying to tell you?"','"Who do you need to forgive — including yourself?"','"What does healing look like for you today, even if it is messy?"','"What are you proud of that no one else knows about?"','"What do you wish someone would say to you right now?"'];
+var intentions = ['"I give myself permission to feel without needing to explain it."','"I am doing the best I can with what I have right now."','"My healing does not have to look like anyone elses."','"I choose to be gentle with myself today."','"I deserve to take up space."'];
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────
+function go(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  var t = document.getElementById(id);
+  if (t) { t.classList.add('active'); t.scrollTop = 0; }
+  prev = cur; cur = id;
+  if (id === 's-pride') { initPride(); }
+  if (id === 's-sleep') { initSleep(); }
+  if (id === 's-grat') { initGrat(); }
+  if (id === 's-carry') { renderCarry(); }
+  if (id === 's-home') { updateStats(); }
+}
+function back() { go(prev); }
+
+
+
+// ─── TOAST ───────────────────────────────────────────────────────────
+function toast(m) {
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2A2035;color:white;padding:12px 20px;border-radius:100px;font-family:Jost,sans-serif;font-size:0.75rem;letter-spacing:0.1em;z-index:9999;white-space:nowrap;max-width:85vw;text-align:center';
+  t.textContent = m;
+  document.body.appendChild(t);
+  setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 2500);
+}
+
+function showMsg(id, txt) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = txt; el.style.display = 'block'; }
+}
+
+function updateStats() {
+  var e = document.getElementById('h-se'); if (e) e.textContent = entries.length;
+  var w = document.getElementById('h-sw'); if (w) w.textContent = wins.length;
+}
+
+// ─── SUPABASE AUTH ───────────────────────────────────────────────────
+async function signIn() {
+  var email = document.getElementById('auth-email').value.trim();
+  var pass = document.getElementById('auth-pass').value;
+  if (!email || !pass) { showMsg('auth-msg', 'Please enter your email and password.'); return; }
+  showMsg('auth-msg', 'Signing in…');
+  var result = await sb.auth.signInWithPassword({email: email, password: pass});
+  if (result.error) { showMsg('auth-msg', result.error.message); return; }
+  document.getElementById('auth-msg').style.display = 'none';
+}
+
+async function signUp() {
+  var name = document.getElementById('signup-name').value.trim();
+  var email = document.getElementById('signup-email').value.trim();
+  var pass = document.getElementById('signup-pass').value;
+  if (!name || !email || !pass) { showMsg('signup-msg', 'Please fill in all fields.'); return; }
+  if (pass.length < 6) { showMsg('signup-msg', 'Password must be at least 6 characters.'); return; }
+  showMsg('signup-msg', 'Creating your space…');
+  try {
+    var result = await sb.auth.signUp({email: email, password: pass, options: {data: {username: name}, emailRedirectTo: 'https://chrysalis247.github.io/Beforethebutterfly/'}});
+    if (result.error) { showMsg('signup-msg', result.error.message); return; }
+    if (result.data && result.data.user) {
+      try { await sb.from('profiles').upsert({id: result.data.user.id, username: name}); } catch(e) {}
+      localStorage.setItem('btb_u', name);
+      if (result.data.session) {
+        await onSignedIn(result.data.user);
+      } else {
+        showMsg('signup-msg', '✓ Account created! Check your email to confirm, then sign in.');
+      }
+    }
+  } catch(e) {
+    showMsg('signup-msg', 'Something went wrong. Please try again.');
+  }
+}
+
+async function forgotPass() {
+  var email = document.getElementById('auth-email').value.trim();
+  if (!email) { showMsg('auth-msg', 'Enter your email above first.'); return; }
+  await sb.auth.resetPasswordForEmail(email);
+  showMsg('auth-msg', 'Password reset email sent! Check your inbox.');
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  currentUser = null;
+  entries = []; moments = []; letters = []; wins = [];
+  go('s-auth');
+  toast('Signed out. See you soon. 🤍');
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  var profile = await sb.from('profiles').select('username').eq('id', user.id).single();
+  var name = (profile.data && profile.data.username) ? profile.data.username : (user.user_metadata && user.user_metadata.username) ? user.user_metadata.username : user.email.split('@')[0];
+  name = name[0].toUpperCase() + name.slice(1);
+  localStorage.setItem('btb_u', name);
+  var h = document.getElementById('h-name');
+  if (h) h.innerHTML = 'How are you <em style="font-style:italic;color:var(--mid)">really</em><br>feeling today, ' + name + '?';
+  await loadAllData();
+  var firstTime = !profile.data || !profile.data.username;
+  if (firstTime) { go('s-ob'); } else { go('s-home'); }
+}
+
+async function loadAllData() {
+  if (!currentUser) return;
+  var uid = currentUser.id;
+  var res = await Promise.all([
+    sb.from('entries').select('*').eq('user_id', uid).order('created_at', {ascending: false}),
+    sb.from('moments').select('*').eq('user_id', uid).order('created_at', {ascending: false}),
+    sb.from('letters').select('*').eq('user_id', uid).order('created_at', {ascending: false}),
+    sb.from('wins').select('*').eq('user_id', uid).order('created_at', {ascending: false})
+  ]);
+  entries = res[0].data || [];
+  moments = res[1].data || [];
+  letters = res[2].data || [];
+  wins = res[3].data || [];
+  renderJnl(); renderRiver(); renderLetters(); renderYourWins(); updateStats();
+}
+
+// ─── ONBOARDING ──────────────────────────────────────────────────────
+function obGo(n) {
+  for (var i = 1; i <= 4; i++) {
+    var el = document.getElementById('ob' + i);
+    if (el) el.style.display = (i === n) ? 'block' : 'none';
+  }
+}
+function pickFeel(el) {
+  document.querySelectorAll('#ob2 [onclick]').forEach(function(b) { b.style.borderColor='rgba(255,255,255,0.65)'; b.style.background='var(--surf)'; });
+  el.style.borderColor='var(--lav)'; el.style.background='rgba(200,184,218,0.2)';
+  document.getElementById('feel-btn').disabled = false;
+}
+function pickReason(el) {
+  var isOn = el.getAttribute('data-on') === '1';
+  el.setAttribute('data-on', isOn ? '0' : '1');
+  el.style.borderColor = isOn ? 'rgba(255,255,255,0.65)' : 'var(--lav)';
+  el.style.background = isOn ? 'var(--surf)' : 'rgba(200,184,218,0.18)';
+  document.getElementById('reason-btn').disabled = document.querySelectorAll('#ob3 [data-on="1"]').length === 0;
+}
+function onNameInput(v) {
+  document.getElementById('ob-name-btn').disabled = v.trim().length < 2;
+  var a = document.getElementById('ob-name-aff');
+  if (v.trim().length > 1) { var n = v.trim()[0].toUpperCase() + v.trim().slice(1); a.textContent = 'You are exactly where you need to be, ' + n + '. 🤍'; }
+  else { a.textContent = 'This space will remember you — not to track you, but to welcome you home. 🤍'; }
+}
+async function finishOb() {
+  var n = document.getElementById('ob-name').value.trim();
+  var name = n[0].toUpperCase() + n.slice(1);
+  localStorage.setItem('btb_u', name);
+  if (currentUser) {
+    await sb.from('profiles').upsert({id: currentUser.id, username: name});
+  }
+  var h = document.getElementById('h-name');
+  if (h) h.innerHTML = 'How are you <em style="font-style:italic;color:var(--mid)">really</em><br>feeling today, ' + name + '?';
+  go('s-home');
+}
+
+// ─── HOME ─────────────────────────────────────────────────────────────
+function newInt() { document.getElementById('h-int').textContent = intentions[Math.floor(Math.random() * intentions.length)]; }
+
+// ─── PRIDE ───────────────────────────────────────────────────────────
+function initPride() { var a=document.getElementById('pride-aff'); if(a) a.textContent=prideAffs[prideAI]; var p=document.getElementById('pride-prm'); if(p) p.textContent=pridePrms[pridePI]; }
+function nextPrideAff() { prideAI=(prideAI+1)%prideAffs.length; document.getElementById('pride-aff').textContent=prideAffs[prideAI]; }
+function nextPridePrm() { pridePI=(pridePI+1)%pridePrms.length; document.getElementById('pride-prm').textContent=pridePrms[pridePI]; }
+async function savePride() {
+  var b=document.getElementById('pride-body').value.trim(); if(!b) return;
+  var date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(currentUser) { var r=await sb.from('entries').insert({user_id:currentUser.id,title:'Unapologetically Me',body:b,tags:['pride'],date:date}).select().single(); if(r.data) entries.unshift(r.data); }
+  else { entries.unshift({id:Date.now(),title:'Unapologetically Me',body:b,tags:['pride'],date:date}); }
+  document.getElementById('pride-body').value=''; renderJnl(); toast('Entry saved. You showed up for yourself. 🌈');
+}
+
+// ─── BREATHE ─────────────────────────────────────────────────────────
+var brOn=false, brTo;
+function toggleBreath() {
+  if(brOn){clearTimeout(brTo);brOn=false;document.getElementById('br-btn').textContent='Begin';document.getElementById('br-txt').textContent='Ready';document.getElementById('br-inner').style.transform='scale(1)';return;}
+  brOn=true; document.getElementById('br-btn').textContent='Stop';
+  var phases=[{t:'Breathe in',i:'Inhale for 4 counts',s:'1.6',d:4000},{t:'Hold',i:'Hold for 4 counts',s:'1.6',d:4000},{t:'Breathe out',i:'Exhale for 4 counts',s:'1',d:4000},{t:'Hold',i:'Rest for 4 counts',s:'1',d:4000}];
+  var idx=0;
+  function run(){if(!brOn)return;var p=phases[idx%phases.length];document.getElementById('br-txt').textContent=p.t;document.getElementById('br-inst').textContent=p.i;document.getElementById('br-inner').style.transform='scale('+p.s+')';idx++;brTo=setTimeout(run,p.d);}
+  run();
+}
+
+// ─── TODAY I NEED ─────────────────────────────────────────────────────
+function pickToday(btn,screen,msg,label) {
+  document.querySelectorAll('#s-today .card').forEach(function(b){b.style.background='';b.style.borderColor='';});
+  btn.style.background='rgba(200,184,218,0.12)'; btn.style.borderColor='rgba(200,184,218,0.5)';
+  document.getElementById('today-txt').textContent=msg;
+  var gb=document.getElementById('today-go'); gb.textContent=label+' →'; gb.onclick=function(){go(screen);};
+  document.getElementById('today-card').style.display='block';
+}
+
+// ─── CARRYING ─────────────────────────────────────────────────────────
+function addCarry() {
+  var inp=document.getElementById('carry-inp'); var txt=inp.value.trim(); if(!txt) return;
+  carrying.unshift({id:Date.now(),text:txt,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('btb_c',JSON.stringify(carrying)); inp.value=''; renderCarry(); toast('Added. It is safe here. 🤍');
+}
+function releaseCarry(id) {
+  carrying=carrying.filter(function(i){return i.id!==id;}); localStorage.setItem('btb_c',JSON.stringify(carrying)); renderCarry(); toast('Released. A little lighter now. 🌿');
+}
+function renderCarry() {
+  var list=document.getElementById('carry-list'); var emp=document.getElementById('carry-empty'); if(!list) return;
+  if(!carrying.length){list.innerHTML='';if(emp) emp.style.display='block';return;} if(emp) emp.style.display='none';
+  list.innerHTML=carrying.map(function(item){return '<div class="card" style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;border-left:3px solid #C8B8DA"><div style="flex:1"><p style="font-family:Playfair Display,serif;font-size:0.9rem;color:var(--deep);line-height:1.55;margin-bottom:4px">'+item.text+'</p><p style="font-size:0.65rem;color:var(--soft)">'+item.date+'</p></div><button onclick="releaseCarry('+item.id+')" style="background:#F7F4FB;border:1px solid rgba(200,184,218,0.3);border-radius:8px;padding:6px 10px;font-size:0.65rem;color:var(--soft);cursor:pointer;font-family:Jost,sans-serif;flex-shrink:0">Release</button></div>';}).join('');
+}
+
+// ─── GRATITUDE ────────────────────────────────────────────────────────
+function initGrat() { var el=document.getElementById('grat-prm'); if(el) el.textContent=gratPrms[gratI]; renderGrat(); }
+function nextGratPrm() { gratI=(gratI+1)%gratPrms.length; document.getElementById('grat-prm').textContent=gratPrms[gratI]; }
+function saveGrat() {
+  var b=document.getElementById('grat-body').value.trim(); if(!b) return;
+  gratEs.unshift({id:Date.now(),prompt:gratPrms[gratI],body:b,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('btb_g',JSON.stringify(gratEs)); document.getElementById('grat-body').value=''; renderGrat(); toast('Gratitude saved. 🌿');
+}
+function renderGrat() {
+  var list=document.getElementById('grat-list'); if(!list||!gratEs.length) return;
+  list.innerHTML=gratEs.slice(0,5).map(function(e){return '<div class="card" style="margin-bottom:10px;border-left:3px solid #B8CEB8"><p style="font-size:0.68rem;font-style:italic;color:#6B8F6B;margin-bottom:6px">'+e.prompt+'</p><p style="font-family:Playfair Display,serif;font-size:0.88rem;color:var(--deep);line-height:1.55">'+e.body+'</p><p style="font-size:0.62rem;color:var(--soft);margin-top:6px">'+e.date+'</p></div>';}).join('');
+}
+
+// ─── SLEEP ────────────────────────────────────────────────────────────
+function initSleep() { var el=document.getElementById('sleep-aff'); if(el) el.textContent=sleepAffs[sleepI]; }
+function nextSleepAff() { sleepI=(sleepI+1)%sleepAffs.length; document.getElementById('sleep-aff').textContent=sleepAffs[sleepI]; }
+function clearDump() { document.getElementById('sleep-dump').value=''; toast('Put down for tonight. Rest well. 🌙'); }
+function clearGoods() { document.getElementById('sg1').value=''; document.getElementById('sg2').value=''; document.getElementById('sg3').value=''; toast('Sweet dreams. You found the good today. 🌙'); }
+
+// ─── KINDRED ──────────────────────────────────────────────────────────
+function joinKindred() { var em=document.getElementById('kind-email').value.trim(); if(!em) return; localStorage.setItem('btb_k',em); document.getElementById('kind-email').value=''; toast('You are on the list! We will notify you when Kindred Spirits launches. 🫂'); }
+
+// ─── MOOD ─────────────────────────────────────────────────────────────
+function pickEmo(el,e) {
+  document.querySelectorAll('.mc').forEach(function(c){c.style.borderColor='rgba(255,255,255,0.65)';c.style.background='var(--surf)';});
+  el.style.borderColor='var(--mist)'; el.style.background='rgba(184,212,216,0.2)';
+  emo=e; document.getElementById('mood-btn').disabled=false;
+}
+function onMoodExtra(el) { document.getElementById('mood-chars').textContent=el.value.length+' / 280'; if(emo) document.getElementById('mood-btn').disabled=false; }
+async function doTranslate() {
+  if(!emo) return;
+  document.getElementById('mood-pick').style.display='none';
+  document.getElementById('mood-load').style.display='block';
+  document.getElementById('mood-res').style.display='none';
+  var t=trData[emo];
+  var x=document.getElementById('mood-extra').value.trim();
+  try {
+    var r=await fetch('/api/mood',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emotion:emo,extra:x})});
+    if(r.ok){
+      var d=await r.json();
+      showMoodResult(emo,d.underneath,d.insight,d.validation,t);
+    } else { showMoodResult(emo,t.u,t.i,t.v,t); }
+  } catch(e) { showMoodResult(emo,t.u,t.i,t.v,t); }
+}
+function showMoodResult(e,un,ins,val,t) {
+  document.getElementById('mood-load').style.display='none';
+  document.getElementById('mood-res').style.display='block';
+  document.getElementById('mr-ttl').innerHTML=t.t;
+  document.getElementById('mr-sur').textContent=t.s;
+  document.getElementById('mr-un').textContent=un;
+  document.getElementById('mr-ins').textContent=ins;
+  document.getElementById('mr-val').textContent=val;
+  document.getElementById('mr-sug-ic').textContent=t.si;
+  document.getElementById('mr-sug-n').textContent=t.sn;
+  document.getElementById('mr-sug-d').textContent=t.sd;
+  document.getElementById('mr-sug').onclick=function(){go(t.sc);};
+  document.getElementById('mood-sa').scrollTop=0;
+}
+function resetMood() {
+  emo=''; document.querySelectorAll('.mc').forEach(function(c){c.style.borderColor='rgba(255,255,255,0.65)';c.style.background='var(--surf)';});
+  document.getElementById('mood-extra').value=''; document.getElementById('mood-chars').textContent='0 / 280';
+  document.getElementById('mood-btn').disabled=true;
+  document.getElementById('mood-pick').style.display='block';
+  document.getElementById('mood-load').style.display='none';
+  document.getElementById('mood-res').style.display='none';
+}
+
+// ─── JOURNAL ──────────────────────────────────────────────────────────
+function checkWrite() {
+  var t=document.getElementById('w-title').value.trim(); var b=document.getElementById('w-body').value.trim();
+  var w=b.split(/\s+/).filter(function(x){return x;}).length;
+  document.getElementById('w-wc').textContent=w+' word'+(w!==1?'s':'');
+  document.getElementById('w-save').disabled=!(t.length>0&&w>=3);
+}
+async function saveEntry() {
+  var t=document.getElementById('w-title').value.trim(); var b=document.getElementById('w-body').value.trim();
+  var tags=Array.from(document.querySelectorAll('#s-write .tag.on')).map(function(x){return x.textContent.trim();});
+  var date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(currentUser) { var r=await sb.from('entries').insert({user_id:currentUser.id,title:t,body:b,tags:tags,date:date}).select().single(); if(r.data) entries.unshift(r.data); }
+  else { entries.unshift({id:Date.now(),title:t,body:b,tags:tags,date:date}); }
+  document.getElementById('w-title').value=''; document.getElementById('w-body').value='';
+  document.getElementById('w-wc').textContent='0 words'; document.getElementById('w-save').disabled=true;
+  document.querySelectorAll('#s-write .tag').forEach(function(x){x.classList.remove('on');});
+  renderJnl(); updateStats(); go('s-jnl');
+}
+function renderJnl() {
+  var c=document.getElementById('jnl-list'); if(!c) return;
+  if(!entries.length){c.innerHTML='<p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:20px 0">Your entries will appear here 🦋</p>';return;}
+  var cols=['#C8B8DA','#B8D4D8','#B8CEB8','#D4B896','#E8C8C8'];
+  c.innerHTML=entries.map(function(e,i){var col=cols[i%cols.length];var tag=e.tags&&e.tags.length?e.tags[0].split(' ').slice(1).join(' '):'Entry';var snip=e.body.length>80?e.body.substring(0,80)+'…':e.body;return '<div style="display:flex;gap:12px;padding:8px 0"><div style="width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.8);flex-shrink:0;margin-top:4px;background:'+col+'"></div><div style="flex:1;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.6);border-radius:14px;padding:11px 14px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.6rem;color:var(--soft)">'+e.date+'</span><span style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;border-radius:100px;background:rgba(200,184,218,0.2);color:var(--mid)">'+tag+'</span></div><p style="font-family:Playfair Display,serif;font-size:0.85rem;font-weight:400;color:var(--deep);margin-bottom:3px">'+e.title+'</p><p style="font-size:0.72rem;color:var(--soft);line-height:1.4">'+snip+'</p></div></div>';}).join('');
+}
+
+// ─── UNSENT ───────────────────────────────────────────────────────────
+function pickRec(name,sal) {
+  recName=name; recSal=sal;
+  document.getElementById('u-to').textContent=name;
+  document.getElementById('u-sal').textContent=sal;
+  document.getElementById('u-body').value=''; document.getElementById('u-wc').textContent='0 words'; document.getElementById('u-done').disabled=true;
+  go('s-wuns');
+}
+function checkLetter(el) {
+  var w=el.value.trim().split(/\s+/).filter(function(x){return x;}).length;
+  document.getElementById('u-wc').textContent=w+' word'+(w!==1?'s':'');
+  document.getElementById('u-done').disabled=w<3;
+}
+async function doEnding(type) {
+  var b=document.getElementById('u-body').value.trim();
+  var data={burn:{ic:'🔥',t:"It's <em style='font-style:italic;color:var(--mid)'>gone.</em>",m:'The words existed. They mattered. Now they have turned to ash.'},release:{ic:'🕊️',t:"It's <em style='font-style:italic;color:var(--mid)'>released.</em>",m:'You let it go. Not because it did not matter — but because you have carried it long enough.'},keep:{ic:'🤍',t:"It's <em style='font-style:italic;color:var(--mid)'>yours to keep.</em>",m:'This letter is saved, safe, and private. Some things deserve to be witnessed — even if only by you.'}};
+  var d=data[type];
+  document.getElementById('rit-ic').textContent=d.ic;
+  document.getElementById('rit-ttl').innerHTML=d.t;
+  document.getElementById('rit-msg').textContent=d.m;
+  if(type==='keep'&&b){
+    var date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    if(currentUser){var r=await sb.from('letters').insert({user_id:currentUser.id,recipient:recName,salutation:recSal,body:b,date:date}).select().single();if(r.data) letters.unshift(r.data);}
+    else{letters.unshift({id:Date.now(),rec:recName,sal:recSal,body:b,date:date});}
+    renderLetters();
+  }
+  go('s-ritual');
+}
+function renderLetters() {
+  var c=document.getElementById('uns-list'); if(!c) return;
+  if(!letters.length){c.innerHTML='<p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:16px 0">Your kept letters will appear here 🕊️</p>';return;}
+  c.innerHTML=letters.map(function(l){var rec=l.recipient||l.rec;var sal=l.salutation||l.sal;return '<div class="card" style="margin-bottom:10px"><p style="font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--soft);margin-bottom:4px">'+l.date+' · To '+rec+'</p><p style="font-family:Playfair Display,serif;font-style:italic;font-size:0.85rem;color:var(--mid)">'+sal+'</p><p style="font-size:0.78rem;color:var(--soft);margin-top:4px">'+l.body.substring(0,80)+'…</p></div>';}).join('');
+}
+
+// ─── TIMELINE ─────────────────────────────────────────────────────────
+function setMType(t) {
+  mtype=t;
+  document.getElementById('t-mo').style.borderColor=t==='moment'?'var(--mist)':'rgba(255,255,255,0.6)';
+  document.getElementById('t-mo').style.background=t==='moment'?'rgba(184,212,216,0.2)':'rgba(255,255,255,0.38)';
+  document.getElementById('t-mi').style.borderColor=t==='milestone'?'var(--gold)':'rgba(255,255,255,0.6)';
+  document.getElementById('t-mi').style.background=t==='milestone'?'rgba(212,184,150,0.18)':'rgba(255,255,255,0.38)';
+}
+function checkMom() { document.getElementById('m-save').disabled=document.getElementById('m-ttl').value.trim().length<2; }
+async function saveMoment() {
+  var t=document.getElementById('m-ttl').value.trim(); var n=document.getElementById('m-note').value.trim();
+  var date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(currentUser){var r=await sb.from('moments').insert({user_id:currentUser.id,type:mtype,title:t,note:n,date:date}).select().single();if(r.data) moments.unshift(r.data);}
+  else{moments.unshift({id:Date.now(),type:mtype,title:t,note:n,date:date});}
+  document.getElementById('m-ttl').value=''; document.getElementById('m-note').value='';
+  document.getElementById('m-save').disabled=true; setMType('moment'); renderRiver(); go('s-tl');
+}
+function renderRiver() {
+  var c=document.getElementById('tl-list'); if(!c) return;
+  if(!moments.length){c.innerHTML='<p style="font-size:0.8rem;color:var(--soft);font-style:italic;text-align:center;padding:30px 0 10px">Your healing moments will flow here 🌿</p>';return;}
+  var cols=['#B8D4D8','#B8CEB8','#C8B8DA','#D4B896','#E8C8C8'];
+  c.innerHTML=moments.map(function(m,i){var side=i%2===0?'row-reverse':'row';var pl=i%2===0?'padding-left:45%':'padding-right:45%';var col=cols[i%cols.length];return '<div style="display:flex;flex-direction:'+side+';gap:10px;margin-bottom:20px;position:relative;'+pl+'"><div style="position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:2"><div style="width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 2px 6px rgba(107,88,120,0.15);display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border-radius:50%;background:'+col+'"></div></div></div><div style="flex:1;background:var(--surf);border:1.5px solid rgba(255,255,255,0.68);border-radius:14px;padding:11px 13px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.58rem;letter-spacing:0.1em;color:var(--soft)">'+m.date+'</span><span style="font-size:0.54rem;letter-spacing:0.12em;text-transform:uppercase;padding:2px 6px;border-radius:100px;background:'+(m.type==='milestone'?'rgba(212,184,150,0.25)':'rgba(184,212,216,0.25)')+';color:'+(m.type==='milestone'?'#9A7850':'#6A9EA4')+'">'+m.type+'</span></div><p style="font-family:Playfair Display,serif;font-size:0.82rem;font-weight:400;color:var(--deep);margin-bottom:2px">'+m.title+'</p>'+(m.note?'<p style="font-size:0.68rem;color:var(--soft);line-height:1.35">'+m.note+'</p>':'')+'</div></div>';}).join('');
+}
+
+// ─── WINS ─────────────────────────────────────────────────────────────
+function switchWins(t) {
+  var tc=document.getElementById('w-tc');var ty=document.getElementById('w-ty');
+  tc.style.background=t==='c'?'white':'transparent';tc.style.color=t==='c'?'var(--deep)':'var(--soft)';tc.style.boxShadow=t==='c'?'0 2px 6px rgba(107,88,120,0.1)':'none';
+  ty.style.background=t==='y'?'white':'transparent';ty.style.color=t==='y'?'var(--deep)':'var(--soft)';ty.style.boxShadow=t==='y'?'0 2px 6px rgba(107,88,120,0.1)':'none';
+  document.getElementById('win-fc').style.display=t==='c'?'block':'none';
+  document.getElementById('win-fy').style.display=t==='y'?'block':'none';
+}
+function onWinType(el) { document.getElementById('win-cc').textContent=(200-el.value.length)+' left'; document.getElementById('win-post').disabled=el.value.trim().length<5; }
+async function postWin() {
+  var t=document.getElementById('win-txt').value.trim(); if(!t) return;
+  launchConfetti();
+  var date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(currentUser){var r=await sb.from('wins').insert({user_id:currentUser.id,text:t,date:date}).select().single();if(r.data) wins.unshift(r.data);}
+  else{wins.unshift({id:Date.now(),text:t,date:date});}
+  var fc=document.getElementById('win-fc');
+  var nc=document.createElement('div'); nc.className='card'; nc.style.cssText='margin:0 20px 10px;opacity:0;transition:opacity 0.5s';
+  nc.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(200,184,218,0.5),rgba(232,200,200,0.4));display:flex;align-items:center;justify-content:center;font-size:0.75rem">🌸</div><div><p style="font-size:0.7rem;color:var(--deep);font-weight:400">Someone healing</p><p style="font-size:0.58rem;color:var(--soft)">Just now</p></div></div><p style="font-family:Playfair Display,serif;font-size:0.92rem;font-weight:400;color:var(--deep);line-height:1.5;margin-bottom:10px">'+t+'</p>';
+  fc.insertBefore(nc,fc.firstChild); setTimeout(function(){nc.style.opacity='1';},50);
+  renderYourWins(); updateStats();
+  document.getElementById('win-txt').value=''; document.getElementById('win-cc').textContent='200 left'; document.getElementById('win-post').disabled=true;
+  setTimeout(function(){go('s-win');switchWins('y');},500);
+}
+function renderYourWins() {
+  var c=document.getElementById('win-yl'); if(!c) return;
+  if(!wins.length){c.innerHTML='<div style="border:1.5px dashed rgba(200,184,218,0.3);border-radius:18px;padding:24px 20px;text-align:center;margin:0 20px"><div style="font-size:1.4rem;margin-bottom:10px">✨</div><p style="font-size:0.82rem;color:var(--soft);line-height:1.6">You have not shared a win yet.</p></div>';return;}
+  c.innerHTML=wins.map(function(w){return '<div class="card" style="margin:0 20px 10px"><p style="font-family:Playfair Display,serif;font-size:0.92rem;font-weight:400;color:var(--deep);line-height:1.5">'+w.text+'</p><p style="font-size:0.58rem;color:var(--soft);margin-top:6px">'+w.date+'</p></div>';}).join('');
+}
+function launchConfetti() {
+  var cols=['#C8B8DA','#E8C8C8','#B8D4D8','#D4B896','#B8CEB8'];
+  for(var i=0;i<24;i++){var p=document.createElement('div');p.style.cssText='position:fixed;pointer-events:none;z-index:999;left:'+Math.random()*100+'%;top:-10px;width:'+(5+Math.random()*6)+'px;height:'+(5+Math.random()*6)+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>0.5?'50%':'2px')+';animation:confettiFall '+(1.2+Math.random())+'s ease-in forwards;animation-delay:'+(Math.random()*0.4)+'s';document.body.appendChild(p);setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},2500);}
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  // Inject PWA manifest
+  try {
+    var md = JSON.stringify({name:'Before the Butterfly',short_name:'BTB',start_url:'/Beforethebutterfly/',scope:'/Beforethebutterfly/',display:'standalone',orientation:'portrait',background_color:'#EDE8F5',theme_color:'#C8B8DA'});
+    var blob = new Blob([md], {type:'application/json'});
+    var ml = document.createElement('link');
+    ml.rel = 'manifest'; ml.href = URL.createObjectURL(blob);
+    document.head.appendChild(ml);
+  } catch(e) {}
+  var hr=new Date().getHours();
+  var g=document.getElementById('h-greet'); if(g) g.textContent=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  var jp=document.getElementById('jnl-prm'); if(jp) jp.textContent=jPrms[new Date().getDate()%jPrms.length];
+
+  try {
+    sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_IN' && session && session.user) {
+        onSignedIn(session.user);
+      }
+      if (event === 'SIGNED_OUT') {
+        go('s-auth');
+      }
+    });
+
+    sb.auth.getSession().then(function(result) {
+      if (result.data && result.data.session && result.data.session.user) {
+        onSignedIn(result.data.session.user);
+      } else {
+        go('s-auth');
+      }
+    });
+
+  } catch(e) {
+    console.warn('Supabase error:', e);
+    go('s-auth');
+  }
+});
+</script>
+</body>
+</html>
